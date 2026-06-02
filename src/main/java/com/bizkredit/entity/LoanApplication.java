@@ -1,0 +1,51 @@
+package com.bizkredit.entity;
+
+import com.bizkredit.enums.ApplicationStatus;
+import com.bizkredit.enums.ProductType;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Entity
+@Table(name = "loan_application")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoanApplication {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long applicationId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "business_id", nullable = false)
+    private SMEBusiness business;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private ProductType productType;
+
+    @Positive
+    private BigDecimal requestedAmount;
+
+    private Integer tenure;
+
+    private String purpose;
+
+    @Builder.Default
+    private LocalDate applicationDate = LocalDate.now();
+
+    private Long assignedAnalystId;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private ApplicationStatus status = ApplicationStatus.DRAFT;
+}
