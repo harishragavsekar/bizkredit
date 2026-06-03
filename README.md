@@ -1,99 +1,103 @@
-# BizKredit — SME Business Loan Platform
+# BizKredit — SME Business Loan & Working Capital Platform
+
+BizKredit is a REST API-based backend platform designed for commercial banks, NBFCs, and fintech lenders to manage end-to-end SME loan origination, credit underwriting, collateral evaluation, and portfolio monitoring.
+
+Built as part of the GenC IDE Java FSE - React (Stage 2 Plus) Program — Interim Evaluation Submission (Sprint 1 & Sprint 2).
+
+---
+
+## Team
+
+| Member | Role | Module |
+|---|---|---|
+| Harish | Team Lead & Backend Developer | Identity & Access Management |
+| Dileep | Backend Developer | SME Business Profile Management |
+| Subhishka | Backend Developer | Loan Application & Document Management |
+| Affrina | Backend Developer | Financial Analysis & Credit Underwriting |
+| Harshat | Backend Developer | Collateral Management & Notifications |
+
+---
+
+## Modules Implemented
+
+**Identity & Access Management** — Harish
+User registration, role-based access control across 6 actor types, and complete audit logging.
+
+**SME Business Profile Management** — Dileep
+Business entity registration, KYC tracking, promoter management, and group company linkage.
+
+**Loan Application & Document Management** — Subhishka
+Loan application submission and tracking across 5 product types, document checklist management, verification workflow, and analyst assignment.
+
+**Financial Analysis & Credit Underwriting** — Affrina
+Multi-year financial statement entry with auto-computation of Current Ratio, Debt-Equity Ratio, and DSCR. Credit proposal creation with scorecard rating and underwriting decision workflow.
+
+**Collateral Management & Notifications** — Harshat
+Collateral asset registration, valuation tracking, revaluation cycle management, and in-app notification system.
+
+---
 
 ## Tech Stack
-- Java 17 + Spring Boot 3.2.5
-- Spring Data JPA + Hibernate
-- MySQL (local dev) | H2 (tests)
-- Lombok + SLF4J
-- JUnit 5 + Mockito
-- Swagger UI at http://localhost:8080/swagger-ui.html
+
+| Layer | Technology |
+|---|---|
+| Language | Java 17 |
+| Framework | Spring Boot 3.2.5 |
+| ORM | Spring Data JPA + Hibernate |
+| Database | MySQL 8 |
+| Build Tool | Maven |
+| Utilities | Lombok, SLF4J |
+| Testing | JUnit 5 + Mockito |
+| API Documentation | SpringDoc OpenAPI (Swagger UI) |
 
 ---
 
-## Local Setup
+## API Summary
 
-1. Install MySQL and create the database (Spring auto-creates tables):
-   ```sql
-   CREATE DATABASE bizkredit_db;
-   ```
+| Module | Base URL | Endpoints |
+|---|---|---|
+| IAM | /api/users | 5 |
+| SME Business | /api/businesses | 8 |
+| Loan Application | /api/applications | 9 |
+| Financial Analysis | /api/financial | 9 |
+| Collateral | /api/collateral | 7 |
 
-2. Update `src/main/resources/application.properties`:
-   ```
-   spring.datasource.username=your_username
-   spring.datasource.password=your_password
-   ```
-
-3. Run the app:
-   ```bash
-   mvn spring-boot:run
-   ```
-
-4. Run tests:
-   ```bash
-   mvn test
-   ```
+Full API documentation available at `http://localhost:8080/swagger-ui.html`
 
 ---
 
-## Git Branching Strategy (team of 5)
+## Unit Tests
 
-```
-main              ← stable, Harish merges here after review
-└── develop       ← integration branch, everyone merges their feature here
-    ├── feature/iam                  (Harish)
-    ├── feature/sme-business-profile (Dileep)
-    ├── feature/loan-application     (Subhishka)
-    ├── feature/financial-analysis   (Affrina)
-    └── feature/collateral           (Harshat)
-```
-
-### Workflow
-```bash
-# Each member starts from develop
-git checkout develop
-git pull origin develop
-git checkout -b feature/your-module
-
-# Work, commit often
-git add .
-git commit -m "feat: add LoanApplication entity and repository"
-
-# Push and raise PR to develop
-git push origin feature/your-module
-```
-
-### Commit message convention
-```
-feat: add X       → new feature
-fix: correct Y    → bug fix
-test: add tests   → test only changes
-refactor: clean Z → no logic change
-```
+| Module | Test Class | Tests |
+|---|---|---|
+| IAM | UserServiceTest | 4 |
+| SME Business | SMEBusinessServiceTest | 6 |
+| Loan Application | LoanApplicationServiceTest | 7 |
+| Financial Analysis | FinancialAnalysisServiceTest | 7 |
+| Collateral | CollateralServiceTest | 6 |
 
 ---
 
-## Package Structure
-```
-com.bizkredit
-├── BizKreditApplication.java
-├── config/          ← (future: security config)
-├── controller/      ← REST controllers
-├── dto/             ← request/response objects + ApiResponse wrapper
-├── entity/          ← JPA entities
-├── enums/           ← Role, Status enums
-├── exception/       ← custom exceptions + GlobalExceptionHandler
-├── repository/      ← Spring Data JPA interfaces
-└── service/         ← business logic
-```
+## Git Workflow
+
+- `main` — stable base branch
+- `develop` — integration branch, all features merged here via Pull Requests
+- `feature/*` — individual feature branch per module
 
 ---
 
-## Module Ownership
-| Module | Team member | Package suffix suggestion |
-|--------|-------------|--------------------------|
-| IAM (User, AuditLog) | Harish | base package |
-| SME Business Profile | Dileep | (same packages, different entity/service/controller files) |
-| Loan Application & Docs | Subhishka | same |
-| Financial Analysis & Credit | Affrina | same |
-| Collateral + Notifications | Harshat | same |
-| Facility + Covenant | — | Post-interim |
+## Agile Practice
+
+Sprint-based development following the DevLed model. Daily stand-ups, sprint planning, and retrospectives conducted throughout. Task tracking managed on Jira. All code reviewed via GitHub Pull Requests before merging to develop.
+
+---
+
+## Pending — Post Interim (Sprint 3 to 5)
+
+- Facility Disbursement & Working Capital Management
+- Covenant & Portfolio Monitoring
+- Microservices architecture with Spring Cloud
+- React frontend
+- Docker containerization
+- AWS deployment
+- SonarQube code quality integration
