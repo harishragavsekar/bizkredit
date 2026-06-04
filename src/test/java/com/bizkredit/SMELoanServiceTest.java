@@ -1,0 +1,129 @@
+package com.bizkredit;
+
+import com.bizkredit.entity.*;
+import com.bizkredit.enums.*;
+import com.bizkredit.exception.BadRequestException;
+import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.repository.*;
+import com.bizkredit.service.SMELoanService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+class SMELoanServiceTest {
+
+    @Mock private SMEBusinessRepository businessRepository;
+    @Mock private PromoterRepository promoterRepository;
+    @Mock private GroupCompanyRepository groupCompanyRepository;
+    @Mock private LoanApplicationRepository loanApplicationRepository;
+    @Mock private ApplicationDocumentRepository documentRepository;
+
+    @InjectMocks
+    private SMELoanService smeService;
+
+    private SMEBusiness sampleBusiness;
+    private LoanApplication sampleApplication;
+
+    @BeforeEach
+    void setUp() {
+        sampleBusiness = SMEBusiness.builder()
+                .businessId(1L)
+                .businessName("Dileep Enterprises")
+                .registrationNumber("REG123")
+                .entityType(EntityType.PRIVATE_LIMITED)
+                .status("Active")
+                .build();
+
+        sampleApplication = LoanApplication.builder()
+                .applicationId(1L)
+                .business(sampleBusiness)
+                .productType(ProductType.TERM_LOAN)
+                .requestedAmount(new BigDecimal("1000000"))
+                .tenure(36)
+                .status(ApplicationStatus.SUBMITTED)
+                .build();
+    }
+
+    @Test
+    void registerBusiness_success() {
+        when(businessRepository.existsByRegistrationNumber("REG123")).thenReturn(false);
+        when(businessRepository.save(any())).thenReturn(sampleBusiness);
+
+        SMEBusiness result = smeService.registerBusiness(sampleBusiness);
+
+        assertThat(result.getBusinessName()).isEqualTo("Dileep Enterprises");
+        verify(businessRepository).save(any());
+    }
+
+    @Test
+    void registerBusiness_duplicate_throwsBadRequest() {
+        when(businessRepository.existsByRegistrationNumber("REG123")).thenReturn(true);
+
+        assertThatThrownBy(() -> smeService.registerBusiness(sampleBusiness))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("already registered");
+    }
+
+    @Test
+    void getBusinessById_notFound_throwsResourceNotFound() {
+        when(businessRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> smeService.getBusinessById(99L))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void submitApplication_success() {
+        when(businessRepository.findById(1L)).thenReturn(Optional.of(sampleBusiness));
+        when(loanApplicationRepository.save(any())).thenReturn(sampleApplication);
+
+        LoanApplication result = smeService.submitApplication(1L, sampleApplication);
+
+        assertThat(result.getStatus()).isEqualTo(ApplicationStatus.SUBMITTED);
+    }
+
+    @Test
+    void linkGroupCompany_sameId_throwsBadRequest() {
+        assertThatThrownBy(() -> smeService.linkGroupCompany(1L, 1L, "Subsidiary"))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("cannot be the same");
+    }
+
+    @Test
+    void assignAnalyst_setsStatusInReview() {
+        when(loanApplicationRepository.findById(1L)).thenReturn(Optional.of(sampleApplication));
+        when(loanApplicationRepository.save(any())).thenReturn(sampleApplication);
+
+        LoanApplication result = smeService.assignAnalyst(1L, 5L);
+
+        assertThat(result.getAssignedAnalystId()).isEqualTo(5L);
+        assertThat(result.getStatus()).isEqualTo(ApplicationStatus.IN_REVIEW);
+    }
+
+    @Test
+    void uploadDocument_success() {
+        ApplicationDocument doc = ApplicationDocument.builder()
+                .documentType(DocumentType.AUDITED_FINANCIALS)
+                .financialYear("2023-24")
+                .build();
+
+        when(loanApplicationRepository.findById(1L)).thenReturn(Optional.of(sampleApplication));
+        when(documentRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        ApplicationDocument saved = smeService.uploadDocument(1L, doc);
+
+        assertThat(saved.getApplication()).isEqualTo(sampleApplication);
+    }
+}
