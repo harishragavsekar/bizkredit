@@ -1,0 +1,19 @@
+package com.bizkredit.repository;
+
+import com.bizkredit.entity.UnderwritingDecision;
+import com.bizkredit.enums.DecisionStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface UnderwritingDecisionRepository extends JpaRepository<UnderwritingDecision, Long> {
+
+    Optional<UnderwritingDecision> findByProposal_ProposalId(Long proposalId);
+
+    List<UnderwritingDecision> findByStatus(DecisionStatus status);
+
+    List<UnderwritingDecision> findByManagerId(Long managerId);
+}
