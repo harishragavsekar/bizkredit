@@ -2,7 +2,6 @@ package com.bizkredit;
 
 import com.bizkredit.entity.User;
 import com.bizkredit.enums.Role;
-import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.exception.ResourceNotFoundException;
 import com.bizkredit.repository.AuditLogRepository;
 import com.bizkredit.repository.UserRepository;
@@ -20,6 +19,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+// Unit tests for UserService
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
@@ -41,31 +41,19 @@ class UserServiceTest {
                 .name("Harish Kumar")
                 .email("harish@bizkredit.com")
                 .phone("9876543210")
+                .password("hashedpassword")
                 .role(Role.ADMIN)
                 .status("Active")
                 .build();
     }
 
     @Test
-    void registerUser_success() {
-        when(userRepository.existsByEmail(sampleUser.getEmail())).thenReturn(false);
-        when(userRepository.save(any(User.class))).thenReturn(sampleUser);
+    void getUserById_success() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
 
-        User result = userService.registerUser(sampleUser);
+        var result = userService.getUserById(1L);
 
         assertThat(result.getEmail()).isEqualTo("harish@bizkredit.com");
-        verify(auditLogRepository, times(1)).save(any());
-    }
-
-    @Test
-    void registerUser_duplicateEmail_throwsBadRequest() {
-        when(userRepository.existsByEmail(sampleUser.getEmail())).thenReturn(true);
-
-        assertThatThrownBy(() -> userService.registerUser(sampleUser))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("already registered");
-
-        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -82,9 +70,18 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
         when(userRepository.save(any(User.class))).thenReturn(sampleUser);
 
-        User updated = userService.updateStatus(1L, "Locked");
+        var updated = userService.updateStatus(1L, "Locked");
 
         assertThat(updated.getStatus()).isEqualTo("Locked");
         verify(auditLogRepository, times(1)).save(any());
+    }
+
+    @Test
+    void updateStatus_invalidStatus_throwsBadRequest() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(sampleUser));
+
+        assertThatThrownBy(() -> userService.updateStatus(1L, "InvalidStatus"))
+                .isInstanceOf(com.bizkredit.exception.BadRequestException.class)
+                .hasMessageContaining("Invalid status");
     }
 }

@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-// Service for both SME Business Profile (4.2) and Loan Application (4.3)
-// These are combined since loan applications belong to a business
+// Service for SME Business Profile (4.2) and Loan Application (4.3)
+// Uses Java 21 features: var, switch expressions
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,12 +27,11 @@ public class SMELoanService {
 
     // ── 4.2 SME Business ─────────────────────────────────────────
 
-    // Register a new SME business - checks for duplicate registration number
     public SMEBusiness registerBusiness(SMEBusiness business) {
         if (businessRepository.existsByRegistrationNumber(business.getRegistrationNumber())) {
             throw new BadRequestException("Business already registered: " + business.getRegistrationNumber());
         }
-        SMEBusiness saved = businessRepository.save(business);
+        var saved = businessRepository.save(business);
         log.info("Business registered: {} [{}]", saved.getBusinessName(), saved.getRegistrationNumber());
         return saved;
     }
@@ -46,19 +45,24 @@ public class SMELoanService {
         return businessRepository.findAll();
     }
 
-    // Update KYC status - Pending / Verified / Rejected
     public SMEBusiness updateKycStatus(Long businessId, String kycStatus) {
-        SMEBusiness business = getBusinessById(businessId);
-        business.setKycStatus(kycStatus);
+        var business = getBusinessById(businessId);
+
+        // Java 14+ switch expression - validates KYC status
+        var validStatus = switch (kycStatus) {
+            case "Pending", "Verified", "Rejected" -> kycStatus;
+            default -> throw new BadRequestException("Invalid KYC status: " + kycStatus);
+        };
+
+        business.setKycStatus(validStatus);
         log.info("KYC status updated for business {}: {}", businessId, kycStatus);
         return businessRepository.save(business);
     }
 
-    // Add a promoter/director to a business
     public Promoter addPromoter(Long businessId, Promoter promoter) {
-        SMEBusiness business = getBusinessById(businessId);
+        var business = getBusinessById(businessId);
         promoter.setBusiness(business);
-        Promoter saved = promoterRepository.save(promoter);
+        var saved = promoterRepository.save(promoter);
         log.info("Promoter {} added to business {}", saved.getName(), businessId);
         return saved;
     }
@@ -68,15 +72,14 @@ public class SMELoanService {
         return promoterRepository.findByBusiness_BusinessId(businessId);
     }
 
-    // Link two businesses as parent-subsidiary
     public GroupCompany linkGroupCompany(Long parentId, Long subsidiaryId, String relationship) {
         if (parentId.equals(subsidiaryId)) {
             throw new BadRequestException("Parent and subsidiary cannot be the same business");
         }
-        SMEBusiness parent = getBusinessById(parentId);
-        SMEBusiness subsidiary = getBusinessById(subsidiaryId);
+        var parent = getBusinessById(parentId);
+        var subsidiary = getBusinessById(subsidiaryId);
 
-        GroupCompany link = GroupCompany.builder()
+        var link = GroupCompany.builder()
                 .parentBusiness(parent)
                 .subsidiaryBusiness(subsidiary)
                 .relationship(relationship)
@@ -87,12 +90,11 @@ public class SMELoanService {
 
     // ── 4.3 Loan Application ──────────────────────────────────────
 
-    // Submit a loan application for a business
     public LoanApplication submitApplication(Long businessId, LoanApplication application) {
-        SMEBusiness business = getBusinessById(businessId);
+        var business = getBusinessById(businessId);
         application.setBusiness(business);
         application.setStatus(ApplicationStatus.SUBMITTED);
-        LoanApplication saved = loanApplicationRepository.save(application);
+        var saved = loanApplicationRepository.save(application);
         log.info("Application submitted for business {}: id={}", businessId, saved.getApplicationId());
         return saved;
     }
@@ -106,9 +108,8 @@ public class SMELoanService {
         return loanApplicationRepository.findByBusiness_BusinessId(businessId);
     }
 
-    // Assign a credit analyst to an application
     public LoanApplication assignAnalyst(Long applicationId, Long analystId) {
-        LoanApplication application = getApplicationById(applicationId);
+        var application = getApplicationById(applicationId);
         application.setAssignedAnalystId(analystId);
         application.setStatus(ApplicationStatus.IN_REVIEW);
         log.info("Analyst {} assigned to application {}", analystId, applicationId);
@@ -116,16 +117,15 @@ public class SMELoanService {
     }
 
     public LoanApplication updateStatus(Long applicationId, ApplicationStatus status) {
-        LoanApplication application = getApplicationById(applicationId);
+        var application = getApplicationById(applicationId);
         application.setStatus(status);
         return loanApplicationRepository.save(application);
     }
 
-    // Upload a document against a loan application
     public ApplicationDocument uploadDocument(Long applicationId, ApplicationDocument document) {
-        LoanApplication application = getApplicationById(applicationId);
+        var application = getApplicationById(applicationId);
         document.setApplication(application);
-        ApplicationDocument saved = documentRepository.save(document);
+        var saved = documentRepository.save(document);
         log.info("Document uploaded for application {}: {}", applicationId, saved.getDocumentType());
         return saved;
     }
@@ -135,9 +135,8 @@ public class SMELoanService {
         return documentRepository.findByApplication_ApplicationId(applicationId);
     }
 
-    // Update document verification status
     public ApplicationDocument verifyDocument(Long docId, VerificationStatus status) {
-        ApplicationDocument doc = documentRepository.findById(docId)
+        var doc = documentRepository.findById(docId)
                 .orElseThrow(() -> new ResourceNotFoundException("Document not found: " + docId));
         doc.setVerificationStatus(status);
         log.info("Document {} status updated to {}", docId, status);

@@ -2,7 +2,7 @@ package com.bizkredit.service;
 
 import com.bizkredit.entity.AuditLog;
 import com.bizkredit.entity.User;
-import com.bizkredit.exception.BadRequestException;
+import com.bizkredit.enums.Role;
 import com.bizkredit.exception.ResourceNotFoundException;
 import com.bizkredit.repository.AuditLogRepository;
 import com.bizkredit.repository.UserRepository;
@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+// UserService - user management operations
+// Uses Java 21 features: var, switch expressions
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,21 +21,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AuditLogRepository auditLogRepository;
-
-    public User registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new BadRequestException("Email already registered: " + user.getEmail());
-        }
-        User saved = userRepository.save(user);
-        log.info("New user registered: {} [{}]", saved.getEmail(), saved.getRole());
-        auditLogRepository.save(AuditLog.builder()
-                .userId(saved.getUserId())
-                .action("REGISTER")
-                .entityType("User")
-                .recordId(String.valueOf(saved.getUserId()))
-                .build());
-        return saved;
-    }
 
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
@@ -49,17 +36,32 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<User> getUsersByRole(Role role) {
+        return userRepository.findByRole(role);
+    }
+
+    // Update user status with audit logging
     public User updateStatus(Long userId, String status) {
-        User user = getUserById(userId);
-        user.setStatus(status);
-        User updated = userRepository.save(user);
+        var user = getUserById(userId);
+
+        // Java 14+ switch expression - validates status value
+        var validStatus = switch (status) {
+            case "Active", "Locked", "Inactive" -> status;
+            default -> throw new com.bizkredit.exception.BadRequestException(
+                    "Invalid status. Must be Active, Locked or Inactive");
+        };
+
+        user.setStatus(validStatus);
+        var updated = userRepository.save(user);
         log.info("User {} status changed to {}", userId, status);
+
         auditLogRepository.save(AuditLog.builder()
                 .userId(userId)
                 .action("STATUS_UPDATE:" + status)
                 .entityType("User")
                 .recordId(String.valueOf(userId))
                 .build());
+
         return updated;
     }
 
