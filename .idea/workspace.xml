@@ -5,6 +5,44 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="01d15dec-406a-46fb-8c3e-57f3f4f10468" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/target/bizkredit-0.0.1-SNAPSHOT.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/bizkredit-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/application-test.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/BizKreditApplication.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/controller/SMELoanController.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/dto/ApiResponse$ApiResponseBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/dto/ApiResponse.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument$ApplicationDocumentBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/GroupCompany$GroupCompanyBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/GroupCompany.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication$LoanApplicationBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter$PromoterBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness$SMEBusinessBuilder.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/ApplicationStatus.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/DocumentType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/EntityType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/ProductType.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/VerificationStatus.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/exception/BadRequestException.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/exception/GlobalExceptionHandler.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/exception/ResourceNotFoundException.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/ApplicationDocumentRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/GroupCompanyRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/LoanApplicationRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/PromoterRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/SMEBusinessRepository.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/service/SMELoanService.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/target/test-classes/com/bizkredit/SMELoanServiceTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
@@ -48,20 +86,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.BizKreditApplication.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/2507335/github/bizkredit&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.BizKreditApplication.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Merging develop",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/2507335/github/bizkredit",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="BizKreditApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.bizkredit.BizKreditApplication" />
