@@ -1,74 +1,189 @@
 # BizKredit — SME Business Loan & Working Capital Platform
 
-BizKredit is a REST API-based backend platform for commercial banks, NBFCs, and fintech lenders to manage SME loan origination, credit underwriting, collateral evaluation, and portfolio monitoring.
+A Spring Boot REST API backend for managing SME business loans, from onboarding and credit underwriting through facility disbursement, collateral management, covenant monitoring, and notifications.
 
-Built as part of the GenC IDE Java FSE - React (Stage 2 Plus) Program.
-
----
-
-## Team
-
-| Member | Module |
-|---|---|
-| Harish (Lead) | 4.1 Identity & Access Management |
-| Dileep | 4.2 SME Business Profile + 4.3 Loan Application |
-| Subhishka | 4.4 Financial Analysis & Credit Underwriting |
-| Affrina | 4.5 Collateral Management + 4.6 Facility Disbursement |
-| Harshat | 4.7 Covenant & Portfolio Monitoring + 4.8 Notifications |
+Built as part of the Cognizant GenC IDE Java FSE (React) Stage 2 Plus program.
 
 ---
 
 ## Tech Stack
 
 | Layer | Technology |
-|---|---|
-| Language | Java 17 |
+|-------|-----------|
+| Language | Java 21 |
 | Framework | Spring Boot 3.2.5 |
-| ORM | Spring Data JPA + Hibernate |
+| Persistence | Spring Data JPA, Hibernate 6.4.4 |
 | Database | MySQL 8 |
-| Build Tool | Maven |
-| Utilities | Lombok, SLF4J |
-| Testing | JUnit 5 + Mockito |
-| API Docs | Swagger UI (SpringDoc OpenAPI) |
+| Security | Spring Security, JWT (JJWT 0.12.3) |
+| Boilerplate | Lombok |
+| Logging | SLF4J |
+| Testing | JUnit 5, Mockito, AssertJ |
+| API Docs | SpringDoc OpenAPI / Swagger UI 2.5.0 |
+| Build | Maven |
 
 ---
 
-## Local Setup
+## Architecture
 
-1. Clone the repo and switch to develop:
+The application follows a standard layered architecture:
+
+```
+Controller  ->  Service  ->  Repository  ->  Database
+   (REST)     (business)     (Spring Data)    (MySQL)
+```
+
+- **Controller layer** — exposes REST endpoints, validates input with `@Valid`
+- **Service layer** — business logic, `@Transactional` boundaries
+- **Repository layer** — Spring Data JPA interfaces
+- **Entity layer** — JPA-mapped domain objects
+- **DTO layer** — request/response records for auth
+- **Security layer** — JWT filter, Spring Security configuration
+- **Exception layer** — centralised handling via `@RestControllerAdvice`
+
+---
+
+## Modules
+
+| Module | Area | Owner |
+|--------|------|-------|
+| 4.1 | Identity & Access Management + JWT Security | Harish (Lead) |
+| 4.2 | SME Business Profile | Dileep |
+| 4.3 | Loan Application | Dileep |
+| 4.4 | Financial Analysis & Credit Underwriting | Subhishka |
+| 4.5 | Collateral Management | Affrina |
+| 4.6 | Facility Disbursement | Affrina |
+| 4.7 | Covenant & Portfolio Monitoring | Harshat |
+| 4.8 | Notifications & Alerts | Harshat |
+
+---
+
+## Security
+
+All endpoints except authentication and Swagger require a valid JWT.
+
+- `POST /api/auth/register` — register a user, returns a JWT
+- `POST /api/auth/login` — authenticate, returns a JWT
+
+Pass the token on subsequent requests:
+
+```
+Authorization: Bearer <token>
+```
+
+Passwords are hashed with BCrypt and never returned in API responses. Sessions are stateless.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- JDK 21
+- MySQL 8 running on `localhost:3306`
+- Maven 3.9+
+
+### Configuration
+
+Update `src/main/resources/application.properties` with your MySQL credentials:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/bizkredit_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=your_password
+server.port=8081
+```
+
+The database `bizkredit_db` is created automatically on first run.
+
+### Build & Run
+
 ```bash
-git clone https://github.com/harishragavsekar/bizkredit.git
-cd bizkredit
-git switch develop
+# Build and run tests
+mvn clean install
+
+# Run the application
+mvn spring-boot:run
 ```
 
-2. Update `src/main/resources/application.properties` with your MySQL credentials.
+The application starts on `http://localhost:8081`.
 
-3. Run Maven build in STS:
-```
-Right-click project -> Run As -> Maven build... -> Goals: clean install -DskipTests
-```
+### API Documentation
 
-4. Run the app:
+Once running, Swagger UI is available at:
+
 ```
-Right-click BizKreditApplication.java -> Run As -> Spring Boot App
+http://localhost:8081/swagger-ui.html
 ```
 
-5. Access Swagger UI:
+Click **Authorize**, paste your JWT, and test any protected endpoint.
+
+---
+
+## Testing
+
+Unit tests cover the service layer using JUnit 5 and Mockito, with AssertJ assertions.
+
+```bash
+mvn test
 ```
-http://localhost:8080/swagger-ui.html
+
+Tests follow the Arrange-Act-Assert pattern and mock all repository dependencies so they run without a database.
+
+---
+
+## API Overview
+
+| Area | Base Path |
+|------|-----------|
+| Authentication | `/api/auth` |
+| Users | `/api/users` |
+| SME Businesses | `/api/businesses` |
+| Loan Applications | `/api/applications` |
+| Financial Analysis | `/api/financial` |
+| Collateral | `/api/collateral` |
+| Facilities & Drawdowns | `/api/facilities`, `/api/drawdowns` |
+| Covenants & Monitoring | `/api/covenants` |
+| Notifications | `/api/notifications` |
+
+Full request/response schemas are documented in Swagger UI.
+
+---
+
+## Project Structure
+
+```
+src/main/java/com/bizkredit/
+├── config/        Security, JWT, OpenAPI configuration
+├── controller/    REST controllers
+├── dto/           Request/response records
+├── entity/        JPA entities
+├── enums/         Domain enumerations
+├── exception/     Global exception handling
+├── repository/    Spring Data JPA repositories
+└── service/       Business logic
+
+src/test/java/com/bizkredit/
+└── *ServiceTest   Unit tests for each service
 ```
 
 ---
 
-## Git Workflow
+## Branch Strategy
 
-- `main` — stable base
-- `develop` — integration branch, all features merged here via PRs
-- `feature/*` — one branch per module
+- `main` — stable releases
+- `develop` — integration branch
+- `feature/*` — per-module feature branches
+
+Feature branches merge into `develop` via pull requests; `develop` merges into `main` at milestones.
 
 ---
 
-## Status
+## Team
 
-Work in progress — Interim Evaluation (Sprint 1 + Sprint 2)
+| Member | Modules |
+|--------|---------|
+| Harish (Lead) | IAM, JWT Security |
+| Dileep | SME Business, Loan Application |
+| Subhishka | Financial Analysis & Underwriting |
+| Affrina | Collateral, Facility Disbursement |
+| Harshat | Covenant Monitoring, Notifications |
