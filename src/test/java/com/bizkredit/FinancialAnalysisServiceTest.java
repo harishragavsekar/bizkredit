@@ -70,7 +70,6 @@ class FinancialAnalysisServiceTest {
 
         FinancialStatement saved = financialService.addStatement(1L, statement);
 
-        // Verify ratios were auto-computed
         assertThat(saved.getCurrentRatio()).isNotNull();
         assertThat(saved.getDebtEquityRatio()).isNotNull();
         assertThat(saved.getDscr()).isNotNull();
@@ -105,13 +104,14 @@ class FinancialAnalysisServiceTest {
     }
 
     @Test
-    void submitProposal_notDraft_throwsBadRequest() {
+    void submitProposal_alreadySubmitted_throwsBadRequest() {
         sampleProposal.setStatus(ProposalStatus.SUBMITTED);
         when(proposalRepository.findById(1L)).thenReturn(Optional.of(sampleProposal));
 
+        // Service now returns specific message per status
         assertThatThrownBy(() -> financialService.submitProposal(1L))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("DRAFT");
+                .hasMessageContaining("already submitted");
     }
 
     @Test

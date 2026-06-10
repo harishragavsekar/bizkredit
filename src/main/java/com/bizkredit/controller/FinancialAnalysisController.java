@@ -4,6 +4,7 @@ import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.entity.*;
 import com.bizkredit.enums.ProposalStatus;
 import com.bizkredit.service.FinancialAnalysisService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class FinancialAnalysisController {
     @PostMapping("/statements")
     public ResponseEntity<ApiResponse<FinancialStatement>> addStatement(
             @RequestParam Long applicationId,
-            @RequestBody FinancialStatement statement) {
+            @Valid @RequestBody FinancialStatement statement) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("Statement added", financialService.addStatement(applicationId, statement)));
     }
@@ -47,7 +48,7 @@ public class FinancialAnalysisController {
     @PostMapping("/proposals")
     public ResponseEntity<ApiResponse<CreditProposal>> createProposal(
             @RequestParam Long applicationId,
-            @RequestBody CreditProposal proposal) {
+            @Valid @RequestBody CreditProposal proposal) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("Proposal created", financialService.createProposal(applicationId, proposal)));
     }
@@ -77,7 +78,7 @@ public class FinancialAnalysisController {
     @PostMapping("/decisions")
     public ResponseEntity<ApiResponse<UnderwritingDecision>> makeDecision(
             @RequestParam Long proposalId,
-            @RequestBody UnderwritingDecision decision) {
+            @Valid @RequestBody UnderwritingDecision decision) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("Decision recorded", financialService.makeDecision(proposalId, decision)));
     }

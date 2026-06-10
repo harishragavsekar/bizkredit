@@ -4,6 +4,7 @@ import com.bizkredit.enums.EntityType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +13,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 // SMEBusiness entity - represents a business applying for a loan
-// One business can have multiple loan applications
 @Entity
 @Table(name = "sme_business")
 @Data
@@ -25,28 +25,33 @@ public class SMEBusiness {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long businessId;
 
-    @NotBlank
+    @NotBlank(message = "Business name is required")
     private String businessName;
 
-    // Unique registration number (CIN/GSTIN/etc.)
+    @NotBlank(message = "Registration number is required")
     @Column(unique = true, nullable = false)
     private String registrationNumber;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
+    @NotNull(message = "Entity type is required")
     private EntityType entityType;
 
     private String industry;
+
+    @PositiveOrZero(message = "Years in operation cannot be negative")
     private Integer yearsInOperation;
+
+    @PositiveOrZero(message = "Annual turnover cannot be negative")
     private BigDecimal annualTurnover;
+
+    @PositiveOrZero(message = "Employee count cannot be negative")
     private Integer employeeCount;
+
     private String primaryBankId;
 
-    // KYC status - Pending / Verified / Rejected
     @Builder.Default
     private String kycStatus = "Pending";
 
-    // Business status - Active / Inactive / Blacklisted
     @Builder.Default
     private String status = "Active";
 }

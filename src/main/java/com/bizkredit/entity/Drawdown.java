@@ -2,34 +2,34 @@ package com.bizkredit.entity;
 
 import com.bizkredit.enums.DrawdownStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// Drawdown - individual disbursement request against a facility
-// A facility can have multiple drawdowns up to the sanctioned limit
 @Entity
 @Table(name = "drawdown")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "facility")
 public class Drawdown {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long drawdownId;
 
-    // Drawdown belongs to one facility account
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id", nullable = false)
     private FacilityAccount facility;
 
+    @NotNull(message = "Amount is required")
+    @Positive(message = "Amount must be positive")
     private BigDecimal amount;
+
     private String purpose;
 
     @Builder.Default

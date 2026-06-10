@@ -2,28 +2,24 @@ package com.bizkredit.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-// Promoter entity - directors or owners of the SME business
-// Multiple promoters can be linked to one business
 @Entity
 @Table(name = "promoter")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+// Exclude business from toString to prevent lazy loading issues
+@ToString(exclude = "business")
 public class Promoter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long promoterId;
 
-    // Many promoters belong to one business
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "business_id", nullable = false)
     private SMEBusiness business;
@@ -31,8 +27,8 @@ public class Promoter {
     @NotBlank
     private String name;
 
-    private String nationalIdRef;           // Aadhaar/PAN reference
-    private BigDecimal shareholdingPercent; // Ownership percentage
+    private String nationalIdRef;
+    private BigDecimal shareholdingPercent;
     private BigDecimal personalNetWorth;
     private Integer creditScore;
 

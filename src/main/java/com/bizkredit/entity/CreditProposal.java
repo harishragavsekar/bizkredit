@@ -4,21 +4,18 @@ import com.bizkredit.enums.AnalystRecommendation;
 import com.bizkredit.enums.ProposalStatus;
 import com.bizkredit.enums.RiskCategory;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Positive;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-// CreditProposal - analyst's assessment and recommendation for a loan
-// Created after financial analysis, submitted to underwriting manager
 @Entity
 @Table(name = "credit_proposal")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "application")
 public class CreditProposal {
 
     @Id
@@ -31,17 +28,22 @@ public class CreditProposal {
 
     private Long analystId;
 
-    private BigDecimal scorecardRating;     // Score out of 100
+    @Positive(message = "Scorecard rating must be positive")
+    private BigDecimal scorecardRating;
 
     @Enumerated(EnumType.STRING)
-    private RiskCategory riskCategory;     // LOW / MEDIUM / HIGH / WATCHLIST
+    private RiskCategory riskCategory;
 
-    private BigDecimal suggestedAmount;     // Analyst's recommended loan amount
-    private BigDecimal suggestedRate;       // Recommended interest rate
+    @Positive(message = "Suggested amount must be positive")
+    private BigDecimal suggestedAmount;
+
+    @Positive(message = "Suggested rate must be positive")
+    private BigDecimal suggestedRate;
+
     private Integer tenure;
 
     @Column(length = 1000)
-    private String conditions;             // Any special conditions
+    private String conditions;
 
     @Enumerated(EnumType.STRING)
     private AnalystRecommendation analystRecommendation;

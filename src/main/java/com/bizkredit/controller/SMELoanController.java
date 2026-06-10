@@ -99,7 +99,7 @@ public class SMELoanController {
 
     @PostMapping("/api/applications/{id}/documents")
     public ResponseEntity<ApiResponse<ApplicationDocument>> uploadDocument(
-            @PathVariable Long id, @RequestBody ApplicationDocument document) {
+            @PathVariable Long id, @Valid @RequestBody ApplicationDocument document) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("Document uploaded", smeService.uploadDocument(id, document)));
     }

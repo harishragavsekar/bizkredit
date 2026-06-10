@@ -60,7 +60,6 @@ class CollateralFacilityServiceTest {
                 .assetType(AssetType.PROPERTY)
                 .marketValue(new BigDecimal("5000000"))
                 .forceValuePercent(new BigDecimal("70"))
-                .realisableValue(new BigDecimal("3500000"))
                 .status(CollateralStatus.REGISTERED)
                 .build();
 
@@ -112,8 +111,8 @@ class CollateralFacilityServiceTest {
         when(facilityRepository.findById(1L)).thenReturn(Optional.of(sampleFacility));
 
         Drawdown drawdown = Drawdown.builder()
-                .amount(new BigDecimal("5000000")) // more than sanctioned 3000000
-                .purpose("Equipment purchase")
+                .amount(new BigDecimal("5000000"))
+                .purpose("Equipment")
                 .build();
 
         assertThatThrownBy(() -> service.requestDrawdown(1L, drawdown))
@@ -124,11 +123,12 @@ class CollateralFacilityServiceTest {
     @Test
     void requestDrawdown_success() {
         when(facilityRepository.findById(1L)).thenReturn(Optional.of(sampleFacility));
+        when(drawdownRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
         Drawdown drawdown = Drawdown.builder()
                 .amount(new BigDecimal("1000000"))
                 .purpose("Working capital")
                 .build();
-        when(drawdownRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
         Drawdown saved = service.requestDrawdown(1L, drawdown);
 
@@ -136,7 +136,7 @@ class CollateralFacilityServiceTest {
     }
 
     @Test
-    void disburseDrawdown_success() {
+    void disburseDrawdown_success_updatesBalance() {
         Drawdown drawdown = Drawdown.builder()
                 .drawdownId(1L)
                 .facility(sampleFacility)
@@ -151,21 +151,56 @@ class CollateralFacilityServiceTest {
 
         assertThat(disbursed.getStatus()).isEqualTo(DrawdownStatus.DISBURSED);
         assertThat(disbursed.getDisbursedDate()).isNotNull();
+        assertThat(sampleFacility.getOutstandingBalance())
+                .isEqualByComparingTo(new BigDecimal("1000000"));
     }
 
     @Test
-    void disburseDrawdown_notRequested_throwsBadRequest() {
+    void repayDrawdown_success_reducesOutstanding() {
+        sampleFacility.setOutstandingBalance(new BigDecimal("1000000"));
         Drawdown drawdown = Drawdown.builder()
                 .drawdownId(1L)
                 .facility(sampleFacility)
                 .amount(new BigDecimal("1000000"))
-                .status(DrawdownStatus.DISBURSED) // already disbursed
+                .status(DrawdownStatus.DISBURSED)
+                .build();
+
+        when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
+        when(drawdownRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        Drawdown repaid = service.repayDrawdown(1L);
+
+        assertThat(repaid.getStatus()).isEqualTo(DrawdownStatus.REPAID);
+        assertThat(repaid.getRepaymentDate()).isNotNull();
+        assertThat(sampleFacility.getOutstandingBalance())
+                .isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    void repayDrawdown_notDisbursed_throwsBadRequest() {
+        Drawdown drawdown = Drawdown.builder()
+                .drawdownId(1L)
+                .facility(sampleFacility)
+                .amount(new BigDecimal("1000000"))
+                .status(DrawdownStatus.REQUESTED)
                 .build();
 
         when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
 
-        assertThatThrownBy(() -> service.disburseDrawdown(1L))
+        assertThatThrownBy(() -> service.repayDrawdown(1L))
                 .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("REQUESTED");
+                .hasMessageContaining("DISBURSED");
+    }
+
+    @Test
+    void revalueCollateral_computesChangePercent() {
+        when(collateralRepository.findById(1L)).thenReturn(Optional.of(sampleCollateral));
+        when(collateralRepository.save(any())).thenReturn(sampleCollateral);
+        when(revaluationRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        // 5000000 -> 6000000 = +20%
+        CollateralRevaluation rev = service.revalueCollateral(1L, new BigDecimal("6000000"), 5L);
+
+        assertThat(rev.getChangePercent()).isEqualByComparingTo(new BigDecimal("20.0000"));
     }
 }

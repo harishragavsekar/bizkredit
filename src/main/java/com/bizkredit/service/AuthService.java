@@ -15,7 +15,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+// AuthService - handles user registration and login
+// Uses Java 16+ Record DTOs - accessors like request.email() instead of request.getEmail()
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,22 +31,24 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
 
+    // @Transactional - if anything fails, entire registration rolls back
+    @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BadRequestException("Email already registered: " + request.getEmail());
+        if (userRepository.existsByEmail(request.email())) {
+            throw new BadRequestException("Email already registered: " + request.email());
         }
 
-        var user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .phone(request.getPhone())
-                .role(request.getRole())
-                .branchId(request.getBranchId())
+        User user = User.builder()
+                .name(request.name())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .phone(request.phone())
+                .role(request.role())
+                .branchId(request.branchId())
                 .status("Active")
                 .build();
 
-        var saved = userRepository.save(user);
+        User saved = userRepository.save(user);
         log.info("User registered: {} [{}]", saved.getEmail(), saved.getRole());
 
         auditLogRepository.save(AuditLog.builder()
@@ -53,24 +58,29 @@ public class AuthService {
                 .recordId(String.valueOf(saved.getUserId()))
                 .build());
 
-        var token = jwtUtil.generateToken(customUserDetailsService.loadUserByUsername(saved.getEmail()));
+        String token = jwtUtil.generateToken(
+                customUserDetailsService.loadUserByUsername(saved.getEmail()));
+
         return new AuthResponse(token, "Bearer", saved.getUserId(),
                 saved.getName(), saved.getEmail(), saved.getRole());
     }
 
+    // @Transactional - audit log and login are atomic
+    @Transactional
     public AuthResponse login(LoginRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(), request.getPassword()));
+                        request.email(), request.password()));
 
-        var user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
 
         if (!user.getStatus().equals("Active")) {
             throw new BadRequestException("Account is " + user.getStatus() + ". Contact admin.");
         }
 
-        var token = jwtUtil.generateToken(customUserDetailsService.loadUserByUsername(user.getEmail()));
+        String token = jwtUtil.generateToken(
+                customUserDetailsService.loadUserByUsername(user.getEmail()));
         log.info("User logged in: {}", user.getEmail());
 
         auditLogRepository.save(AuditLog.builder()

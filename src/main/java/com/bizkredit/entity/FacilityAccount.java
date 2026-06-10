@@ -3,22 +3,20 @@ package com.bizkredit.entity;
 import com.bizkredit.enums.FacilityStatus;
 import com.bizkredit.enums.ProductType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// FacilityAccount - created after underwriting approval
-// Represents the actual loan account from which drawdowns are made
 @Entity
 @Table(name = "facility_account")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = {"application", "business"})
 public class FacilityAccount {
 
     @Id
@@ -34,15 +32,20 @@ public class FacilityAccount {
     private SMEBusiness business;
 
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Product type is required")
     private ProductType productType;
 
-    private BigDecimal sanctionedLimit;     // Total approved amount
-    private BigDecimal disbursedAmount;     // Amount already disbursed
-    private BigDecimal outstandingBalance;  // Amount yet to be repaid
+    @NotNull(message = "Sanctioned limit is required")
+    @Positive(message = "Sanctioned limit must be positive")
+    private BigDecimal sanctionedLimit;
 
+    private BigDecimal disbursedAmount;
+    private BigDecimal outstandingBalance;
+
+    @Positive(message = "Interest rate must be positive")
     private BigDecimal interestRate;
 
-    private LocalDate expiryDate;           // Facility validity end date
+    private LocalDate expiryDate;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default
