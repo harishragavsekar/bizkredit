@@ -20,7 +20,7 @@ public class ApplicationDocument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long docId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "application_id", nullable = false)
     private LoanApplication application;
 
