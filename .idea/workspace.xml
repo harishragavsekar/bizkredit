@@ -5,46 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="01d15dec-406a-46fb-8c3e-57f3f4f10468" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/target/bizkredit-0.0.1-SNAPSHOT.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/bizkredit-0.0.1-SNAPSHOT.jar.original" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/application-test.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/BizKreditApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/controller/SMELoanController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/dto/ApiResponse$ApiResponseBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/dto/ApiResponse.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument$ApplicationDocumentBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/GroupCompany$GroupCompanyBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/GroupCompany.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication$LoanApplicationBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter$PromoterBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness$SMEBusinessBuilder.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/ApplicationStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/DocumentType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/EntityType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/ProductType.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/enums/VerificationStatus.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/exception/BadRequestException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/exception/GlobalExceptionHandler.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/exception/ResourceNotFoundException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/ApplicationDocumentRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/GroupCompanyRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/LoanApplicationRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/PromoterRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/repository/SMEBusinessRepository.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/service/SMELoanService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/target/test-classes/com/bizkredit/SMELoanServiceTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,12 +54,13 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging develop",
+    "git-widget-placeholder": "develop",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/2507335/github/bizkredit",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "inlay.hints"
   }
 }]]></component>
   <component name="RunManager">
@@ -129,6 +91,34 @@
       <option name="presentableId" value="Default" />
       <updated>1781065726144</updated>
     </task>
+    <task id="LOCAL-00001">
+      <option name="closed" value="true" />
+      <created>1781109372683</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1781109372683</updated>
+    </task>
+    <task id="LOCAL-00002">
+      <option name="closed" value="true" />
+      <created>1781109514555</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1781109514555</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
