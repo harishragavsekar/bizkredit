@@ -4,8 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="01d15dec-406a-46fb-8c3e-57f3f4f10468" name="Changes" comment="">
+    <list default="true" id="01d15dec-406a-46fb-8c3e-57f3f4f10468" name="Changes" comment="added jwt secret key and period">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/controller/FinancialAnalysisController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/controller/FinancialAnalysisController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/controller/SMELoanController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/controller/SMELoanController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument$ApplicationDocumentBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument$ApplicationDocumentBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/ApplicationDocument.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/CreditProposal$CreditProposalBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/CreditProposal$CreditProposalBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/CreditProposal.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/CreditProposal.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/FinancialStatement$FinancialStatementBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/FinancialStatement$FinancialStatementBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/FinancialStatement.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/FinancialStatement.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication$LoanApplicationBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication$LoanApplicationBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/LoanApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter$PromoterBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter$PromoterBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/Promoter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness$SMEBusinessBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness$SMEBusinessBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/SMEBusiness.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/UnderwritingDecision$UnderwritingDecisionBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/UnderwritingDecision$UnderwritingDecisionBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/UnderwritingDecision.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/entity/UnderwritingDecision.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/service/FinancialAnalysisService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/service/FinancialAnalysisService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/bizkredit/service/SMELoanService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/bizkredit/service/SMELoanService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,22 +66,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.BizKreditApplication.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "develop",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/2507335/github/bizkredit",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0",
-    "settings.editor.selected.configurable": "inlay.hints"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.BizKreditApplication.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/2507335/github/bizkredit&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;inlay.hints&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="BizKreditApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.bizkredit.BizKreditApplication" />
@@ -107,7 +126,15 @@
       <option name="project" value="LOCAL" />
       <updated>1781109514555</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="added jwt secret key and period">
+      <option name="closed" value="true" />
+      <created>1781181964092</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1781181964092</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -120,5 +147,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added jwt secret key and period" />
+    <option name="LAST_COMMIT_MESSAGE" value="added jwt secret key and period" />
   </component>
 </project>
