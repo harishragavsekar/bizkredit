@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,8 +23,8 @@ public class FinancialAnalysisController {
 
     // ── Financial Statement endpoints ─────────────────────────────
 
-    // Add financial statement - ratios auto-computed
     @PostMapping("/statements")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<FinancialStatement>> addStatement(
             @RequestParam Long applicationId,
             @Valid @RequestBody FinancialStatement statement) {
@@ -32,12 +33,14 @@ public class FinancialAnalysisController {
     }
 
     @GetMapping("/statements/application/{applicationId}")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','UNDERWRITING_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<List<FinancialStatement>>> getStatements(@PathVariable Long applicationId) {
         return ResponseEntity.ok(ApiResponse.ok("Statements fetched",
                 financialService.getStatementsByApplication(applicationId)));
     }
 
     @PatchMapping("/statements/{id}/verify")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<FinancialStatement>> verifyStatement(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Statement verified",
                 financialService.verifyStatement(id)));
@@ -46,6 +49,7 @@ public class FinancialAnalysisController {
     // ── Credit Proposal endpoints ─────────────────────────────────
 
     @PostMapping("/proposals")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<CreditProposal>> createProposal(
             @RequestParam Long applicationId,
             @Valid @RequestBody CreditProposal proposal) {
@@ -53,20 +57,22 @@ public class FinancialAnalysisController {
                 .body(ApiResponse.ok("Proposal created", financialService.createProposal(applicationId, proposal)));
     }
 
-    // Submit proposal for underwriting approval
     @PatchMapping("/proposals/{id}/submit")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<CreditProposal>> submitProposal(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Proposal submitted",
                 financialService.submitProposal(id)));
     }
 
     @GetMapping("/proposals/{id}")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','UNDERWRITING_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<CreditProposal>> getProposal(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Proposal fetched",
                 financialService.getProposalById(id)));
     }
 
     @GetMapping("/proposals/status")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','UNDERWRITING_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<List<CreditProposal>>> getByStatus(@RequestParam ProposalStatus value) {
         return ResponseEntity.ok(ApiResponse.ok("Proposals fetched",
                 financialService.getProposalsByStatus(value)));
@@ -74,8 +80,8 @@ public class FinancialAnalysisController {
 
     // ── Underwriting Decision endpoints ───────────────────────────
 
-    // Make underwriting decision on a submitted proposal
     @PostMapping("/decisions")
+    @PreAuthorize("hasRole('UNDERWRITING_MANAGER')")
     public ResponseEntity<ApiResponse<UnderwritingDecision>> makeDecision(
             @RequestParam Long proposalId,
             @Valid @RequestBody UnderwritingDecision decision) {
@@ -84,6 +90,7 @@ public class FinancialAnalysisController {
     }
 
     @GetMapping("/decisions/proposal/{proposalId}")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','UNDERWRITING_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<UnderwritingDecision>> getDecision(@PathVariable Long proposalId) {
         return ResponseEntity.ok(ApiResponse.ok("Decision fetched",
                 financialService.getDecisionByProposal(proposalId)));

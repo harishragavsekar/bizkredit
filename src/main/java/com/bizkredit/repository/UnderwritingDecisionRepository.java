@@ -2,6 +2,7 @@ package com.bizkredit.repository;
 
 import com.bizkredit.entity.UnderwritingDecision;
 import com.bizkredit.enums.DecisionStatus;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,18 @@ import java.util.Optional;
 @Repository
 public interface UnderwritingDecisionRepository extends JpaRepository<UnderwritingDecision, Long> {
 
+    @EntityGraph(attributePaths = {
+            "proposal",
+            "proposal.application",
+            "proposal.application.business"
+    })
+    Optional<UnderwritingDecision> findById(Long id);
+
+    @EntityGraph(attributePaths = {
+            "proposal",
+            "proposal.application",
+            "proposal.application.business"
+    })
     Optional<UnderwritingDecision> findByProposal_ProposalId(Long proposalId);
 
     List<UnderwritingDecision> findByStatus(DecisionStatus status);
