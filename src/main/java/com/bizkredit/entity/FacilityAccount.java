@@ -2,6 +2,7 @@ package com.bizkredit.entity;
 
 import com.bizkredit.enums.FacilityStatus;
 import com.bizkredit.enums.ProductType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"application", "business"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FacilityAccount {
 
     @Id
@@ -40,6 +42,7 @@ public class FacilityAccount {
     private BigDecimal sanctionedLimit;
 
     private BigDecimal disbursedAmount;
+
     private BigDecimal outstandingBalance;
 
     @Positive(message = "Interest rate must be positive")

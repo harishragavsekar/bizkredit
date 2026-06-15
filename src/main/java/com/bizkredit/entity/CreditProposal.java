@@ -3,6 +3,7 @@ package com.bizkredit.entity;
 import com.bizkredit.enums.AnalystRecommendation;
 import com.bizkredit.enums.ProposalStatus;
 import com.bizkredit.enums.RiskCategory;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "application")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CreditProposal {
 
     @Id

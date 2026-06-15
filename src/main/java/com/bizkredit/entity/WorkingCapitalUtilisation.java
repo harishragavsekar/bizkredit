@@ -1,5 +1,6 @@
 package com.bizkredit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "facility")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class WorkingCapitalUtilisation {
 
     @Id
@@ -24,9 +26,13 @@ public class WorkingCapitalUtilisation {
     private FacilityAccount facility;
 
     private String period;
+
     private BigDecimal drawingPower;
+
     private BigDecimal currentUtilisation;
+
     private BigDecimal availableLimit;
+
     private BigDecimal utilisationPercent;
 
     @Builder.Default

@@ -11,7 +11,13 @@ import java.util.List;
 @Repository
 public interface CovenantTrackingRepository extends JpaRepository<CovenantTracking, Long> {
 
-    @EntityGraph(attributePaths = {"covenant", "covenant.facility"})
+    @EntityGraph(attributePaths = {
+            "covenant",
+            "covenant.facility",
+            "covenant.facility.application",
+            "covenant.facility.application.business",
+            "covenant.facility.business"
+    })
     List<CovenantTracking> findByCovenant_CovenantId(Long covenantId);
 
     List<CovenantTracking> findByComplianceStatus(ComplianceStatus status);

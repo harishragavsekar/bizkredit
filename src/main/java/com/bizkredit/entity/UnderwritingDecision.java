@@ -1,6 +1,7 @@
 package com.bizkredit.entity;
 
 import com.bizkredit.enums.DecisionStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "proposal")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UnderwritingDecision {
 
     @Id
@@ -25,8 +27,11 @@ public class UnderwritingDecision {
     private CreditProposal proposal;
 
     private Long managerId;
+
     private BigDecimal sanctionedAmount;
+
     private BigDecimal approvedRate;
+
     private Integer tenure;
 
     @Column(length = 1000)

@@ -2,6 +2,7 @@ package com.bizkredit.entity;
 
 import com.bizkredit.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
@@ -33,7 +35,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
 
-    // @JsonIgnore - password hash never returned in API responses (security)
     @JsonIgnore
     @NotBlank
     private String password;

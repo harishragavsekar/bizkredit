@@ -3,6 +3,7 @@ package com.bizkredit.entity;
 import com.bizkredit.enums.EWSSeverity;
 import com.bizkredit.enums.EWSSignalType;
 import com.bizkredit.enums.EWSStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class EarlyWarningSignal {
 
     @Id
