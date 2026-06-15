@@ -1,8 +1,8 @@
 package com.bizkredit.enums;
 
 public enum CovenantStatus {
-    COMPLIANT,
-    BREACHED,
+    ACTIVE,
     WAIVED,
+    BREACHED,
     UNDER_REVIEW
 }
