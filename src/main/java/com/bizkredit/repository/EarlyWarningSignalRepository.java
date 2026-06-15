@@ -13,13 +13,35 @@ import java.util.Optional;
 @Repository
 public interface EarlyWarningSignalRepository extends JpaRepository<EarlyWarningSignal, Long> {
 
-    @EntityGraph(attributePaths = {"facility", "facility.business"})
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     Optional<EarlyWarningSignal> findById(Long id);
 
-    @EntityGraph(attributePaths = {"facility", "facility.business"})
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     List<EarlyWarningSignal> findByFacility_FacilityId(Long facilityId);
 
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     List<EarlyWarningSignal> findBySeverity(EWSSeverity severity);
 
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     List<EarlyWarningSignal> findByStatus(EWSStatus status);
 }

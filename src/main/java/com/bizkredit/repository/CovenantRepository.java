@@ -12,10 +12,20 @@ import java.util.Optional;
 @Repository
 public interface CovenantRepository extends JpaRepository<Covenant, Long> {
 
-    @EntityGraph(attributePaths = {"facility", "facility.business"})
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     Optional<Covenant> findById(Long id);
 
-    @EntityGraph(attributePaths = {"facility", "facility.business"})
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     List<Covenant> findByFacility_FacilityId(Long facilityId);
 
     List<Covenant> findByStatus(CovenantStatus status);

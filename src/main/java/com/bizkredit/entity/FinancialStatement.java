@@ -1,5 +1,6 @@
 package com.bizkredit.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "application")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class FinancialStatement {
 
     @Id
@@ -31,6 +33,7 @@ public class FinancialStatement {
     private BigDecimal revenue;
 
     private BigDecimal ebitda;
+
     private BigDecimal pat;
 
     @PositiveOrZero(message = "Total assets cannot be negative")
@@ -41,9 +44,10 @@ public class FinancialStatement {
 
     private BigDecimal netWorth;
 
-    // Auto-computed ratios
     private BigDecimal currentRatio;
+
     private BigDecimal debtEquityRatio;
+
     private BigDecimal dscr;
 
     private Long enteredById;

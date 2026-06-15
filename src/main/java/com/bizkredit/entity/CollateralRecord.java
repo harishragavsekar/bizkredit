@@ -2,6 +2,7 @@ package com.bizkredit.entity;
 
 import com.bizkredit.enums.AssetType;
 import com.bizkredit.enums.CollateralStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "application")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CollateralRecord {
 
     @Id
@@ -32,6 +34,7 @@ public class CollateralRecord {
     private AssetType assetType;
 
     private String description;
+
     private String ownerName;
 
     @NotNull(message = "Market value is required")
@@ -42,7 +45,9 @@ public class CollateralRecord {
     private BigDecimal forceValuePercent;
 
     private BigDecimal realisableValue;
+
     private LocalDate valuationDate;
+
     private Long valuedById;
 
     @Enumerated(EnumType.STRING)

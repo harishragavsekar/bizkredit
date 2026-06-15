@@ -2,6 +2,7 @@ package com.bizkredit.entity;
 
 import com.bizkredit.enums.ApplicationStatus;
 import com.bizkredit.enums.ProductType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "business")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class LoanApplication {
 
     @Id

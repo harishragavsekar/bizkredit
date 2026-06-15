@@ -1,6 +1,7 @@
 package com.bizkredit.entity;
 
 import com.bizkredit.enums.EntityType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,13 +13,13 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-// SMEBusiness entity - represents a business applying for a loan
 @Entity
 @Table(name = "sme_business")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SMEBusiness {
 
     @Id

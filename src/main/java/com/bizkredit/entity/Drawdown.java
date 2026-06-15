@@ -1,6 +1,7 @@
 package com.bizkredit.entity;
 
 import com.bizkredit.enums.DrawdownStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = "facility")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Drawdown {
 
     @Id
@@ -36,6 +38,7 @@ public class Drawdown {
     private LocalDate requestDate = LocalDate.now();
 
     private LocalDate disbursedDate;
+
     private LocalDate repaymentDate;
 
     @Enumerated(EnumType.STRING)
