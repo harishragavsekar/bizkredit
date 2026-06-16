@@ -5,7 +5,9 @@ import com.bizkredit.enums.*;
 import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.exception.ResourceNotFoundException;
 import com.bizkredit.repository.*;
+import com.bizkredit.service.AuditLogService;
 import com.bizkredit.service.CollateralFacilityService;
+import com.bizkredit.service.NotificationHelper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,8 @@ class CollateralFacilityServiceTest {
     @Mock private WorkingCapitalUtilisationRepository utilisationRepository;
     @Mock private LoanApplicationRepository applicationRepository;
     @Mock private SMEBusinessRepository businessRepository;
+    @Mock private AuditLogService auditLogService;
+    @Mock private NotificationHelper notificationHelper;
 
     @InjectMocks
     private CollateralFacilityService service;
@@ -135,13 +139,48 @@ class CollateralFacilityServiceTest {
         assertThat(saved.getStatus()).isEqualTo(DrawdownStatus.REQUESTED);
     }
 
+    // New test: approve step (Requested → Approved)
+    @Test
+    void approveDrawdown_success() {
+        Drawdown drawdown = Drawdown.builder()
+                .drawdownId(1L)
+                .facility(sampleFacility)
+                .amount(new BigDecimal("1000000"))
+                .status(DrawdownStatus.REQUESTED)
+                .build();
+
+        when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
+        when(drawdownRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
+
+        Drawdown approved = service.approveDrawdown(1L);
+
+        assertThat(approved.getStatus()).isEqualTo(DrawdownStatus.APPROVED);
+    }
+
+    @Test
+    void approveDrawdown_notRequested_throwsBadRequest() {
+        Drawdown drawdown = Drawdown.builder()
+                .drawdownId(1L)
+                .facility(sampleFacility)
+                .amount(new BigDecimal("1000000"))
+                .status(DrawdownStatus.DISBURSED)
+                .build();
+
+        when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
+
+        assertThatThrownBy(() -> service.approveDrawdown(1L))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("REQUESTED");
+    }
+
+    // Updated: disburse now requires APPROVED status (not REQUESTED)
     @Test
     void disburseDrawdown_success_updatesBalance() {
         Drawdown drawdown = Drawdown.builder()
                 .drawdownId(1L)
                 .facility(sampleFacility)
                 .amount(new BigDecimal("1000000"))
-                .status(DrawdownStatus.REQUESTED)
+                .status(DrawdownStatus.APPROVED)   // ← updated from REQUESTED
                 .build();
 
         when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
@@ -153,6 +192,22 @@ class CollateralFacilityServiceTest {
         assertThat(disbursed.getDisbursedDate()).isNotNull();
         assertThat(sampleFacility.getOutstandingBalance())
                 .isEqualByComparingTo(new BigDecimal("1000000"));
+    }
+
+    @Test
+    void disburseDrawdown_notApproved_throwsBadRequest() {
+        Drawdown drawdown = Drawdown.builder()
+                .drawdownId(1L)
+                .facility(sampleFacility)
+                .amount(new BigDecimal("1000000"))
+                .status(DrawdownStatus.REQUESTED)  // ← not APPROVED
+                .build();
+
+        when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
+
+        assertThatThrownBy(() -> service.disburseDrawdown(1L))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("APPROVED");
     }
 
     @Test
