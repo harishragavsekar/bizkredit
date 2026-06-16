@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
@@ -27,10 +24,6 @@ public class User {
     @NotBlank
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
     @Email
     @Column(unique = true, nullable = false)
     private String email;
@@ -42,8 +35,18 @@ public class User {
     @NotBlank
     private String phone;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     private String branchId;
 
     @Builder.Default
     private String status = "Active";
+
+    @Builder.Default
+    private Integer failedLoginAttempts = 0;
+
+    // BP2-40 RBAC — region-level data scoping
+    private String region;
 }

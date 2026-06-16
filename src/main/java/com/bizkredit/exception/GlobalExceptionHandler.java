@@ -5,68 +5,70 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.stream.Collectors;
 
-// Handles all exceptions globally - no need for try-catch in controllers
-// Uses Java 21 pattern matching switch for clean exception handling
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleAll(Exception ex) {
+    public ResponseEntity<ApiResponse<?>> handle(Exception ex) {
+        log.error("Exception caught: {} - {}", ex.getClass().getSimpleName(), ex.getMessage());
 
-        // Java 21 pattern matching switch - matches exception type and extracts variable
+        // Java 21 pattern matching switch
         return switch (ex) {
+            case ResourceNotFoundException e ->
+                ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(e.getMessage()));
 
-            // 404 - resource not found
-            case ResourceNotFoundException e -> {
-                log.warn("Not found: {}", e.getMessage());
-                yield ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(ApiResponse.error(e.getMessage()));
-            }
+            case BadRequestException e ->
+                ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(e.getMessage()));
 
-            // 400 - business rule violation
-            case BadRequestException e -> {
-                log.warn("Bad request: {}", e.getMessage());
-                yield ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ApiResponse.error(e.getMessage()));
-            }
+            case ForbiddenException e ->
+                ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error(e.getMessage()));
 
-            // 400 - @Valid annotation failures
+            case UnauthorizedException e ->
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(e.getMessage()));
+
+            case BadCredentialsException e ->
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error("Invalid email or password"));
+
+            case LockedException e ->
+                ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error("Account is locked. Contact admin."));
+
+            case DisabledException e ->
+                ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error("Account is inactive. Contact admin."));
+
+            case AccessDeniedException e ->
+                ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error("Access denied: insufficient permissions"));
+
             case MethodArgumentNotValidException e -> {
-                var errors = e.getBindingResult().getFieldErrors().stream()
-                        .map(fe -> fe.getField() + ": " + fe.getDefaultMessage())
-                        .collect(Collectors.joining(", "));
-                log.warn("Validation failed: {}", errors);
+                String errors = e.getBindingResult().getFieldErrors().stream()
+                    .map(FieldError::getDefaultMessage)
+                    .collect(Collectors.joining(", "));
                 yield ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ApiResponse.error(errors));
+                    .body(ApiResponse.error("Validation failed: " + errors));
             }
 
-            // 401 - not authenticated
-            case AuthenticationException e -> {
-                log.warn("Authentication failed: {}", e.getMessage());
-                yield ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(ApiResponse.error("Invalid credentials"));
-            }
-
-            // 403 - authenticated but not authorized
-            case AccessDeniedException e -> {
-                log.warn("Access denied: {}", e.getMessage());
-                yield ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(ApiResponse.error("Access denied"));
-            }
-
-            // 500 - unexpected errors
             default -> {
-                log.error("Unexpected error: {}", ex.getMessage(), ex);
+                log.error("Unhandled exception", ex);
                 yield ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body(ApiResponse.error("Something went wrong. Please try again."));
+                    .body(ApiResponse.error("Internal server error"));
             }
         };
     }

@@ -15,43 +15,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-// JwtUtil - handles all JWT token operations
-// Token contains: email (subject), role, issued time, expiry time
 @Slf4j
 @Component
 public class JwtUtil {
 
-    // Secret key from application.properties - must be at least 256 bits
     @Value("${jwt.secret}")
     private String secretKey;
 
-    // Token validity - 24 hours in milliseconds
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    // Generate a JWT token for a user
+    // Original method — kept for backward compatibility with existing code
     public String generateToken(UserDetails userDetails) {
-        Map<String, Object> extraClaims = new HashMap<>();
+        return buildToken(new HashMap<>(), userDetails);
+    }
+
+    // Enhanced method — includes userId, role, branchId as claims
+    // Used by AuthService after login/register to produce a richer token
+    public String generateTokenWithClaims(UserDetails userDetails, Map<String, Object> extraClaims) {
         return buildToken(extraClaims, userDetails);
     }
 
-    // Build the actual token with claims
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails) {
         return Jwts.builder()
                 .claims(extraClaims)
-                .subject(userDetails.getUsername())   // email is the subject
+                .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey())
                 .compact();
     }
 
-    // Extract email from token
     public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Check if token is valid for the given user
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String email = extractEmail(token);
         return email.equals(userDetails.getUsername()) && !isTokenExpired(token);
@@ -78,7 +76,6 @@ public class JwtUtil {
                 .getPayload();
     }
 
-    // Convert secret string to a SecretKey object
     private SecretKey getSigningKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);

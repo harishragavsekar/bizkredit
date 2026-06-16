@@ -7,12 +7,11 @@ import com.bizkredit.enums.Role;
 import com.bizkredit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// REST controller for user management
-// Registration moved to AuthController (/api/auth/register)
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -20,34 +19,34 @@ public class UserController {
 
     private final UserService userService;
 
-    // Get user by ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','RELATIONSHIP_MANAGER','CREDIT_ANALYST','UNDERWRITING_MANAGER','COLLATERAL_EVALUATOR','SME_APPLICANT')")
     public ResponseEntity<ApiResponse<User>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("User fetched", userService.getUserById(id)));
     }
 
-    // Get all users
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','RELATIONSHIP_MANAGER')")
     public ResponseEntity<ApiResponse<List<User>>> getAll() {
         return ResponseEntity.ok(ApiResponse.ok("All users", userService.getAllUsers()));
     }
 
-    // Get users by role
     @GetMapping("/role/{role}")
+    @PreAuthorize("hasAnyRole('ADMIN','RELATIONSHIP_MANAGER')")
     public ResponseEntity<ApiResponse<List<User>>> getByRole(@PathVariable Role role) {
         return ResponseEntity.ok(ApiResponse.ok("Users fetched", userService.getUsersByRole(role)));
     }
 
-    // Update user status - Active / Locked / Inactive
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<User>> updateStatus(
             @PathVariable Long id,
             @RequestParam String value) {
         return ResponseEntity.ok(ApiResponse.ok("Status updated", userService.updateStatus(id, value)));
     }
 
-    // Get audit logs for a user
     @GetMapping("/{id}/audit-logs")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<List<AuditLog>>> auditLogs(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Audit logs", userService.getAuditLogs(id)));
     }
