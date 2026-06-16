@@ -50,4 +50,7 @@ public class LoanApplication {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private ApplicationStatus status = ApplicationStatus.DRAFT;
+
+    // Set when this application is a renewal of an existing facility
+    private Long renewedFromFacilityId;
 }

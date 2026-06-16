@@ -3,6 +3,7 @@ package com.bizkredit.controller;
 import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.entity.*;
 import com.bizkredit.enums.ApplicationStatus;
+import com.bizkredit.enums.ProductType;
 import com.bizkredit.enums.VerificationStatus;
 import com.bizkredit.service.SMELoanService;
 import jakarta.validation.Valid;
@@ -20,35 +21,55 @@ public class SMELoanController {
 
     private final SMELoanService smeService;
 
-    // ── SME Business endpoints ────────────────────────────────────
+    // ── SME Business ──────────────────────────────────────────────
 
-    @PostMapping("/api/businesses")
+    @PostMapping("/api/sme-businesses")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<SMEBusiness>> registerBusiness(@Valid @RequestBody SMEBusiness business) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("Business registered", smeService.registerBusiness(business)));
     }
 
-    @GetMapping("/api/businesses/{id}")
+    @GetMapping("/api/sme-businesses/{id}")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<SMEBusiness>> getBusiness(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Business fetched", smeService.getBusinessById(id)));
     }
 
-    @GetMapping("/api/businesses")
+    @GetMapping("/api/sme-businesses")
     @PreAuthorize("hasAnyRole('CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<List<SMEBusiness>>> getAllBusinesses() {
-        return ResponseEntity.ok(ApiResponse.ok("All businesses", smeService.getAllBusinesses()));
+    public ResponseEntity<ApiResponse<List<SMEBusiness>>> getAllBusinesses(
+            @RequestParam(required = false) String entityType,
+            @RequestParam(required = false) String industry,
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(ApiResponse.ok("Businesses fetched",
+                smeService.getBusinessesFiltered(entityType, industry, status)));
     }
 
-    @PatchMapping("/api/businesses/{id}/kyc")
+    @PutMapping("/api/sme-businesses/{id}")
+    @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<SMEBusiness>> updateBusiness(
+            @PathVariable Long id, @RequestBody SMEBusiness updates) {
+        return ResponseEntity.ok(ApiResponse.ok("Business updated", smeService.updateBusiness(id, updates)));
+    }
+
+    @PatchMapping("/api/sme-businesses/{id}/status")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<SMEBusiness>> updateBusinessStatus(
+            @PathVariable Long id, @RequestParam String value) {
+        return ResponseEntity.ok(ApiResponse.ok("Status updated", smeService.updateBusinessStatus(id, value)));
+    }
+
+    // BP2-13 — KYC status update
+    @PatchMapping("/api/sme-businesses/{id}/kyc-status")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<SMEBusiness>> updateKyc(
             @PathVariable Long id, @RequestParam String status) {
         return ResponseEntity.ok(ApiResponse.ok("KYC updated", smeService.updateKycStatus(id, status)));
     }
 
-    @PostMapping("/api/businesses/{id}/promoters")
+    // BP2-13 — Promoters linked to business
+    @PostMapping("/api/sme-businesses/{id}/promoters")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<Promoter>> addPromoter(
             @PathVariable Long id, @Valid @RequestBody Promoter promoter) {
@@ -56,77 +77,157 @@ public class SMELoanController {
                 .body(ApiResponse.ok("Promoter added", smeService.addPromoter(id, promoter)));
     }
 
-    @GetMapping("/api/businesses/{id}/promoters")
+    @GetMapping("/api/sme-businesses/{id}/promoters")
     @PreAuthorize("hasAnyRole('CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<List<Promoter>>> getPromoters(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Promoters fetched", smeService.getPromotersByBusiness(id)));
     }
 
-    @PostMapping("/api/businesses/{parentId}/group-links")
+    @PutMapping("/api/sme-businesses/{businessId}/promoters/{promoterId}")
+    @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<Promoter>> updatePromoter(
+            @PathVariable Long businessId,
+            @PathVariable Long promoterId,
+            @RequestBody Promoter updates) {
+        return ResponseEntity.ok(ApiResponse.ok("Promoter updated",
+                smeService.updatePromoter(promoterId, updates)));
+    }
+
+    @DeleteMapping("/api/sme-businesses/{businessId}/promoters/{promoterId}")
+    @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deletePromoter(
+            @PathVariable Long businessId,
+            @PathVariable Long promoterId) {
+        smeService.deletePromoter(promoterId);
+        return ResponseEntity.ok(ApiResponse.ok("Promoter removed", null));
+    }
+
+    // Group companies
+    @PostMapping("/api/sme-businesses/{id}/group-companies")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<GroupCompany>> linkGroup(
-            @PathVariable Long parentId,
+            @PathVariable Long id,
             @RequestParam Long subsidiaryId,
             @RequestParam String relationship) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Group linked", smeService.linkGroupCompany(parentId, subsidiaryId, relationship)));
+                .body(ApiResponse.ok("Group linked", smeService.linkGroupCompany(id, subsidiaryId, relationship)));
     }
 
-    // ── Loan Application endpoints ────────────────────────────────
+    @GetMapping("/api/sme-businesses/{id}/group-companies")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<List<GroupCompany>>> getGroupCompanies(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.ok("Group companies fetched",
+                smeService.getGroupCompaniesByBusiness(id)));
+    }
 
-    @PostMapping("/api/applications")
+    // ── Loan Application ──────────────────────────────────────────
+
+    @PostMapping("/api/loan-applications")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<LoanApplication>> submitApplication(
+    public ResponseEntity<ApiResponse<LoanApplication>> createApplication(
             @RequestParam Long businessId,
             @Valid @RequestBody LoanApplication application) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Application submitted", smeService.submitApplication(businessId, application)));
+                .body(ApiResponse.ok("Application created", smeService.createApplication(businessId, application)));
     }
 
-    @GetMapping("/api/applications/{id}")
+    @PutMapping("/api/loan-applications/{id}")
+    @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<LoanApplication>> updateApplication(
+            @PathVariable Long id, @RequestBody LoanApplication updates) {
+        return ResponseEntity.ok(ApiResponse.ok("Application updated", smeService.updateApplication(id, updates)));
+    }
+
+    @PatchMapping("/api/loan-applications/{id}/submit")
+    @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<LoanApplication>> submitApplication(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.ok("Application submitted", smeService.submitDraftApplication(id)));
+    }
+
+    @GetMapping("/api/loan-applications/{id}")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<LoanApplication>> getApplication(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok("Application fetched", smeService.getApplicationById(id)));
     }
 
-    @GetMapping("/api/applications/business/{businessId}")
+    @GetMapping("/api/loan-applications")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<List<LoanApplication>>> getByBusiness(@PathVariable Long businessId) {
-        return ResponseEntity.ok(ApiResponse.ok("Applications fetched", smeService.getApplicationsByBusiness(businessId)));
+    public ResponseEntity<ApiResponse<List<LoanApplication>>> getApplications(
+            @RequestParam(required = false) Long businessId,
+            @RequestParam(required = false) ApplicationStatus status,
+            @RequestParam(required = false) ProductType productType) {
+        return ResponseEntity.ok(ApiResponse.ok("Applications fetched",
+                smeService.getApplicationsFiltered(businessId, status, productType)));
     }
 
-    @PatchMapping("/api/applications/{id}/assign")
+    @PatchMapping("/api/loan-applications/{id}/assign")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<LoanApplication>> assignAnalyst(
             @PathVariable Long id, @RequestParam Long analystId) {
         return ResponseEntity.ok(ApiResponse.ok("Analyst assigned", smeService.assignAnalyst(id, analystId)));
     }
 
-    @PatchMapping("/api/applications/{id}/status")
-    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
+    @PatchMapping("/api/loan-applications/{id}/status")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','UNDERWRITING_MANAGER','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<LoanApplication>> updateStatus(
             @PathVariable Long id, @RequestParam ApplicationStatus value) {
         return ResponseEntity.ok(ApiResponse.ok("Status updated", smeService.updateStatus(id, value)));
     }
 
-    @PostMapping("/api/applications/{id}/documents")
+    // ── Documents ─────────────────────────────────────────────────
+
+    @PostMapping("/api/loan-applications/{appId}/documents")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<ApplicationDocument>> uploadDocument(
-            @PathVariable Long id, @Valid @RequestBody ApplicationDocument document) {
+            @PathVariable Long appId, @Valid @RequestBody ApplicationDocument document) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("Document uploaded", smeService.uploadDocument(id, document)));
+                .body(ApiResponse.ok("Document uploaded", smeService.uploadDocument(appId, document)));
     }
 
-    @GetMapping("/api/applications/{id}/documents")
+    @GetMapping("/api/loan-applications/{appId}/documents")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<List<ApplicationDocument>>> getDocuments(@PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.ok("Documents fetched", smeService.getDocumentsByApplication(id)));
+    public ResponseEntity<ApiResponse<List<ApplicationDocument>>> getDocuments(@PathVariable Long appId) {
+        return ResponseEntity.ok(ApiResponse.ok("Documents fetched", smeService.getDocumentsByApplication(appId)));
     }
 
-    @PatchMapping("/api/applications/documents/{docId}/verify")
+    @GetMapping("/api/loan-applications/{appId}/documents/{docId}")
+    @PreAuthorize("hasAnyRole('SME_APPLICANT','CREDIT_ANALYST','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<ApplicationDocument>> getDocument(
+            @PathVariable Long appId, @PathVariable Long docId) {
+        return ResponseEntity.ok(ApiResponse.ok("Document fetched", smeService.getDocumentById(docId)));
+    }
+
+    @PatchMapping("/api/loan-applications/{appId}/documents/{docId}/verify")
     @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<ApplicationDocument>> verifyDocument(
-            @PathVariable Long docId, @RequestParam VerificationStatus status) {
+            @PathVariable Long appId, @PathVariable Long docId,
+            @RequestParam VerificationStatus status) {
         return ResponseEntity.ok(ApiResponse.ok("Document verified", smeService.verifyDocument(docId, status)));
+    }
+
+    @PatchMapping("/api/loan-applications/{appId}/documents/{docId}/flag-deficient")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
+    public ResponseEntity<ApiResponse<ApplicationDocument>> flagDeficient(
+            @PathVariable Long appId, @PathVariable Long docId,
+            @RequestParam String reason) {
+        return ResponseEntity.ok(ApiResponse.ok("Document flagged as deficient",
+                smeService.flagDeficient(docId, reason)));
+    }
+
+    @PatchMapping("/api/loan-applications/{appId}/documents/{docId}/reject")
+    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
+    public ResponseEntity<ApiResponse<ApplicationDocument>> rejectDocument(
+            @PathVariable Long appId, @PathVariable Long docId,
+            @RequestParam String reason) {
+        return ResponseEntity.ok(ApiResponse.ok("Document rejected",
+                smeService.rejectDocument(docId, reason)));
+    }
+
+    @DeleteMapping("/api/loan-applications/{appId}/documents/{docId}")
+    @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
+    public ResponseEntity<ApiResponse<Void>> deleteDocument(
+            @PathVariable Long appId, @PathVariable Long docId) {
+        smeService.deleteDocument(docId);
+        return ResponseEntity.ok(ApiResponse.ok("Document deleted for re-upload", null));
     }
 }
