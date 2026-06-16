@@ -1,8 +1,7 @@
 package com.bizkredit.service;
 
 import com.bizkredit.entity.*;
-import com.bizkredit.enums.DecisionStatus;
-import com.bizkredit.enums.ProposalStatus;
+import com.bizkredit.enums.*;
 import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.exception.ResourceNotFoundException;
 import com.bizkredit.repository.*;
@@ -24,18 +23,18 @@ public class FinancialAnalysisService {
     private final CreditProposalRepository proposalRepository;
     private final UnderwritingDecisionRepository decisionRepository;
     private final LoanApplicationRepository applicationRepository;
+    private final AuditLogService auditLogService;
+    private final NotificationHelper notificationHelper;
 
     @Transactional
     public FinancialStatement addStatement(Long applicationId, FinancialStatement statement) {
         LoanApplication application = applicationRepository.findById(applicationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found: " + applicationId));
-
         statement.setApplication(application);
         statement = computeRatios(statement);
-
         FinancialStatement saved = statementRepository.save(statement);
-        log.info("Financial statement added for application {}, year {}",
-                applicationId, saved.getFinancialYear());
+        auditLogService.log(null, "CREATE", "FinancialStatement", String.valueOf(saved.getStatementId()));
+        log.info("Financial statement added for application {}, year {}", applicationId, saved.getFinancialYear());
         return saved;
     }
 
@@ -49,6 +48,7 @@ public class FinancialAnalysisService {
         FinancialStatement statement = statementRepository.findById(statementId)
                 .orElseThrow(() -> new ResourceNotFoundException("Statement not found: " + statementId));
         statement.setStatus("Verified");
+        auditLogService.log(null, "STATUS_CHANGE", "FinancialStatement", String.valueOf(statementId));
         log.info("Statement {} verified", statementId);
         return statementRepository.save(statement);
     }
@@ -60,15 +60,32 @@ public class FinancialAnalysisService {
         proposal.setApplication(application);
         proposal.setStatus(ProposalStatus.DRAFT);
         CreditProposal saved = proposalRepository.save(proposal);
+        auditLogService.log(null, "CREATE", "CreditProposal", String.valueOf(saved.getProposalId()));
         log.info("Credit proposal created for application {}", applicationId);
         return saved;
+    }
+
+    // PUT /api/financial/proposals/{id} — update (Draft only)
+    @Transactional
+    public CreditProposal updateProposal(Long proposalId, CreditProposal updates) {
+        CreditProposal existing = getProposalById(proposalId);
+        if (existing.getStatus() != ProposalStatus.DRAFT) {
+            throw new BadRequestException("Only DRAFT proposals can be updated");
+        }
+        if (updates.getScorecardRating() != null) existing.setScorecardRating(updates.getScorecardRating());
+        if (updates.getRiskCategory() != null) existing.setRiskCategory(updates.getRiskCategory());
+        if (updates.getSuggestedAmount() != null) existing.setSuggestedAmount(updates.getSuggestedAmount());
+        if (updates.getSuggestedRate() != null) existing.setSuggestedRate(updates.getSuggestedRate());
+        if (updates.getTenure() != null) existing.setTenure(updates.getTenure());
+        if (updates.getConditions() != null) existing.setConditions(updates.getConditions());
+        if (updates.getAnalystRecommendation() != null) existing.setAnalystRecommendation(updates.getAnalystRecommendation());
+        auditLogService.log(null, "UPDATE", "CreditProposal", String.valueOf(proposalId));
+        return proposalRepository.save(existing);
     }
 
     @Transactional
     public CreditProposal submitProposal(Long proposalId) {
         CreditProposal proposal = getProposalById(proposalId);
-
-        // Switch expression - only DRAFT can be submitted
         String message = switch (proposal.getStatus()) {
             case DRAFT -> null;
             case SUBMITTED -> "Proposal already submitted";
@@ -76,10 +93,9 @@ public class FinancialAnalysisService {
             case DECLINED -> "Proposal was declined";
             case SANCTIONED -> "Proposal already sanctioned";
         };
-
         if (message != null) throw new BadRequestException(message);
-
         proposal.setStatus(ProposalStatus.SUBMITTED);
+        auditLogService.log(null, "STATUS_CHANGE", "CreditProposal", String.valueOf(proposalId));
         log.info("Proposal {} submitted for underwriting", proposalId);
         return proposalRepository.save(proposal);
     }
@@ -103,9 +119,16 @@ public class FinancialAnalysisService {
             throw new BadRequestException("Proposal must be SUBMITTED before a decision can be made");
         }
 
+        // Validate SanctionedAmount <= SuggestedAmount
+        if (decision.getSanctionedAmount() != null && proposal.getSuggestedAmount() != null) {
+            if (decision.getSanctionedAmount().compareTo(proposal.getSuggestedAmount()) > 0) {
+                throw new BadRequestException("Sanctioned amount cannot exceed suggested amount of "
+                        + proposal.getSuggestedAmount());
+            }
+        }
+
         decision.setProposal(proposal);
 
-        // Switch expression - maps decision to proposal status
         ProposalStatus newProposalStatus = switch (decision.getStatus()) {
             case APPROVED, CONDITIONAL_APPROVAL -> ProposalStatus.APPROVED_BY_MANAGER;
             case DECLINED -> ProposalStatus.DECLINED;
@@ -114,7 +137,27 @@ public class FinancialAnalysisService {
         proposal.setStatus(newProposalStatus);
         proposalRepository.save(proposal);
 
+        // Auto-transition LoanApplication on decision
+        LoanApplication application = proposal.getApplication();
+        if (application != null) {
+            ApplicationStatus newAppStatus = switch (decision.getStatus()) {
+                case APPROVED, CONDITIONAL_APPROVAL -> ApplicationStatus.SANCTIONED;
+                case DECLINED -> ApplicationStatus.REJECTED;
+            };
+            application.setStatus(newAppStatus);
+            applicationRepository.save(application);
+
+            // Notify assigned analyst of the decision
+            if (application.getAssignedAnalystId() != null) {
+                notificationHelper.notify(application.getAssignedAnalystId(),
+                        "Application #" + application.getApplicationId() + " has been "
+                                + newAppStatus.name() + " by underwriting",
+                        NotificationCategory.APPLICATION);
+            }
+        }
+
         UnderwritingDecision saved = decisionRepository.save(decision);
+        auditLogService.log(null, "APPROVE", "UnderwritingDecision", String.valueOf(saved.getDecisionId()));
         log.info("Underwriting decision {} for proposal {}", decision.getStatus(), proposalId);
         return saved;
     }
@@ -126,7 +169,36 @@ public class FinancialAnalysisService {
                         "Decision not found for proposal: " + proposalId));
     }
 
-    // Auto-computes 3 key financial ratios from raw data
+    // GET statement by ID
+    @Transactional(readOnly = true)
+    public FinancialStatement getStatementById(Long id) {
+        return statementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Statement not found: " + id));
+    }
+
+    // UPDATE statement (Draft only)
+    @Transactional
+    public FinancialStatement updateStatement(Long id, FinancialStatement updates) {
+        FinancialStatement existing = statementRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Statement not found: " + id));
+        if (updates.getRevenue() != null) existing.setRevenue(updates.getRevenue());
+        if (updates.getEbitda() != null) existing.setEbitda(updates.getEbitda());
+        if (updates.getPat() != null) existing.setPat(updates.getPat());
+        if (updates.getTotalAssets() != null) existing.setTotalAssets(updates.getTotalAssets());
+        if (updates.getTotalLiabilities() != null) existing.setTotalLiabilities(updates.getTotalLiabilities());
+        // Recompute
+        if (existing.getTotalAssets() != null && existing.getTotalLiabilities() != null) {
+            existing.setNetWorth(existing.getTotalAssets().subtract(existing.getTotalLiabilities()));
+        }
+        return statementRepository.save(computeRatios(existing));
+    }
+
+    // GET proposals by application
+    @Transactional(readOnly = true)
+    public List<CreditProposal> getProposalsByApplication(Long applicationId) {
+        return proposalRepository.findAllByApplication_ApplicationId(applicationId);
+    }
+
     private FinancialStatement computeRatios(FinancialStatement s) {
         try {
             if (s.getTotalAssets() != null && s.getTotalLiabilities() != null
