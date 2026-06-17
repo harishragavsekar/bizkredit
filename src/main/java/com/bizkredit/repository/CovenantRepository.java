@@ -28,5 +28,11 @@ public interface CovenantRepository extends JpaRepository<Covenant, Long> {
     })
     List<Covenant> findByFacility_FacilityId(Long facilityId);
 
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     List<Covenant> findByStatus(CovenantStatus status);
 }

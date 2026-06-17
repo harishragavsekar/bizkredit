@@ -14,6 +14,7 @@ import com.bizkredit.repository.PasswordResetTokenRepository;
 import com.bizkredit.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -39,6 +41,10 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
+
+    // DEV/TEST ONLY — see application.properties for the security tradeoff this implies.
+    @Value("${bizkredit.security.expose-reset-token-in-response:false}")
+    private boolean exposeResetTokenInResponse;
 
     private static final int MAX_FAILED_ATTEMPTS = 5;
     private static final Pattern PASSWORD_POLICY = Pattern.compile(
@@ -141,33 +147,43 @@ public class AuthService {
         log.info("User logged out: {}", userId);
     }
 
-    // Step 1 of password reset — generate token and send via in-app notification
-    // Returns 200 regardless of whether email exists (prevents enumeration)
+    // Step 1 of password reset — generates a single-use token.
+    // Always behaves identically from the caller's perspective whether or not the email
+    // exists (prevents account enumeration) — EXCEPT for the returned token itself, which
+    // is only ever present when bizkredit.security.expose-reset-token-in-response=true
+    // (dev/test convenience) and the email matched a real account.
     @Transactional
-    public void forgotPassword(String email) {
-        userRepository.findByEmail(email).ifPresent(user -> {
-            // Delete any existing unused tokens for this user
-            resetTokenRepository.deleteByUserId(user.getUserId());
+    public Optional<String> forgotPassword(String email) {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            return Optional.empty();
+        }
+        User user = userOpt.get();
 
-            String token = UUID.randomUUID().toString();
-            resetTokenRepository.save(PasswordResetToken.builder()
-                    .token(token)
-                    .userId(user.getUserId())
-                    .expiresAt(LocalDateTime.now().plusMinutes(15))
-                    .used(false)
-                    .build());
+        // Delete any existing unused tokens for this user
+        resetTokenRepository.deleteByUserId(user.getUserId());
 
-            // In Phase 1 — log the reset token; in Phase 2 this would send email/notification
-            log.info("Password reset token generated for user {}: {} (expires in 15 min)",
-                    user.getEmail(), token);
+        String token = UUID.randomUUID().toString();
+        resetTokenRepository.save(PasswordResetToken.builder()
+                .token(token)
+                .userId(user.getUserId())
+                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .used(false)
+                .build());
 
-            auditLogRepository.save(AuditLog.builder()
-                    .userId(user.getUserId())
-                    .action("PASSWORD_RESET_REQUESTED")
-                    .entityType("User")
-                    .recordId(String.valueOf(user.getUserId()))
-                    .build());
-        });
+        // Always log server-side regardless of the dev-mode flag, so the token is
+        // recoverable from logs even if exposeResetTokenInResponse is off.
+        log.info("Password reset token generated for user {}: {} (expires in 15 min)",
+                user.getEmail(), token);
+
+        auditLogRepository.save(AuditLog.builder()
+                .userId(user.getUserId())
+                .action("PASSWORD_RESET_REQUESTED")
+                .entityType("User")
+                .recordId(String.valueOf(user.getUserId()))
+                .build());
+
+        return exposeResetTokenInResponse ? Optional.of(token) : Optional.empty();
     }
 
     // Step 2 of password reset — validate token and set new password

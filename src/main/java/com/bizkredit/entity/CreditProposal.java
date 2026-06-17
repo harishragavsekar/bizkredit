@@ -30,11 +30,28 @@ public class CreditProposal {
 
     private Long analystId;
 
-    @Positive(message = "Scorecard rating must be positive")
-    private BigDecimal scorecardRating;
+    // The numeric score (0-100 or 0-maxScore) — auto-computed by scorecard engine
+    // or set as output field. Renamed from 'scorecardRating' to avoid confusion with ratingLabel.
+    private BigDecimal computedRatingScore;
 
     @Enumerated(EnumType.STRING)
     private RiskCategory riskCategory;
+
+    // Which scorecard produced computedRatingScore/riskCategory, for audit/traceability.
+    private Long scorecardId;
+
+    // The raw computed score before mapping to a rating band (0..scorecard.maxScore).
+    private Integer computedScore;
+
+    // The letter grade (e.g. "AAA", "BBB", "B") — analyst POSTs this, system auto-fills
+    // if scorecard engine runs, or analyst can manually set it.
+    private String ratingLabel;
+
+    // True if scorecardRating/riskCategory were last set by the auto-scoring engine;
+    // false once an analyst manually edits them via PUT. Prevents auto-compute from
+    // silently overwriting a deliberate analyst override on submit.
+    @Builder.Default
+    private boolean scorecardAutoComputed = true;
 
     @Positive(message = "Suggested amount must be positive")
     private BigDecimal suggestedAmount;

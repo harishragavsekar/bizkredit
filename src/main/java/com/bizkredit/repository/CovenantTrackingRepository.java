@@ -20,5 +20,12 @@ public interface CovenantTrackingRepository extends JpaRepository<CovenantTracki
     })
     List<CovenantTracking> findByCovenant_CovenantId(Long covenantId);
 
+    @EntityGraph(attributePaths = {
+            "covenant",
+            "covenant.facility",
+            "covenant.facility.application",
+            "covenant.facility.application.business",
+            "covenant.facility.business"
+    })
     List<CovenantTracking> findByComplianceStatus(ComplianceStatus status);
 }

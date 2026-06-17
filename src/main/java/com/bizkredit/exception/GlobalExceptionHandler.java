@@ -67,8 +67,10 @@ public class GlobalExceptionHandler {
 
             default -> {
                 log.error("Unhandled exception", ex);
+                String detail = ex.getClass().getSimpleName()
+                        + (ex.getMessage() != null ? ": " + ex.getMessage() : "");
                 yield ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("Internal server error"));
+                    .body(ApiResponse.error("Internal server error — " + detail));
             }
         };
     }

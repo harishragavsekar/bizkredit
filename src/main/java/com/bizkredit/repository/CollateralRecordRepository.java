@@ -18,5 +18,6 @@ public interface CollateralRecordRepository extends JpaRepository<CollateralReco
     @EntityGraph(attributePaths = {"application", "application.business"})
     List<CollateralRecord> findByApplication_ApplicationId(Long applicationId);
 
+    @EntityGraph(attributePaths = {"application", "application.business"})
     List<CollateralRecord> findByStatus(CollateralStatus status);
 }

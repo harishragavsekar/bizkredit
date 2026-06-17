@@ -3,10 +3,12 @@ package com.bizkredit;
 import com.bizkredit.config.JwtUtil;
 import com.bizkredit.dto.LoginRequest;
 import com.bizkredit.dto.RegisterRequest;
+import com.bizkredit.entity.PasswordResetToken;
 import com.bizkredit.entity.User;
 import com.bizkredit.enums.Role;
 import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.repository.AuditLogRepository;
+import com.bizkredit.repository.PasswordResetTokenRepository;
 import com.bizkredit.repository.UserRepository;
 import com.bizkredit.service.AuthService;
 import com.bizkredit.service.CustomUserDetailsService;
@@ -19,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -32,6 +35,7 @@ class AuthServiceTest {
 
     @Mock private UserRepository userRepository;
     @Mock private AuditLogRepository auditLogRepository;
+    @Mock private PasswordResetTokenRepository resetTokenRepository;
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private JwtUtil jwtUtil;
     @Mock private AuthenticationManager authenticationManager;
@@ -116,5 +120,42 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Locked");
+    }
+
+    @Test
+    void forgotPassword_devModeOn_knownEmail_returnsToken() {
+        ReflectionTestUtils.setField(authService, "exposeResetTokenInResponse", true);
+        when(userRepository.findByEmail("harish@bizkredit.com")).thenReturn(Optional.of(sampleUser));
+
+        Optional<String> result = authService.forgotPassword("harish@bizkredit.com");
+
+        assertThat(result).isPresent();
+        verify(resetTokenRepository, times(1)).save(any(PasswordResetToken.class));
+        verify(auditLogRepository, times(1)).save(any());
+    }
+
+    @Test
+    void forgotPassword_devModeOff_knownEmail_returnsEmptyButStillGeneratesToken() {
+        ReflectionTestUtils.setField(authService, "exposeResetTokenInResponse", false);
+        when(userRepository.findByEmail("harish@bizkredit.com")).thenReturn(Optional.of(sampleUser));
+
+        Optional<String> result = authService.forgotPassword("harish@bizkredit.com");
+
+        // Token is still generated and persisted server-side — just not handed back in the response
+        assertThat(result).isEmpty();
+        verify(resetTokenRepository, times(1)).save(any(PasswordResetToken.class));
+    }
+
+    @Test
+    void forgotPassword_unknownEmail_returnsEmptyRegardlessOfDevMode() {
+        ReflectionTestUtils.setField(authService, "exposeResetTokenInResponse", true);
+        when(userRepository.findByEmail("nobody@bizkredit.com")).thenReturn(Optional.empty());
+
+        Optional<String> result = authService.forgotPassword("nobody@bizkredit.com");
+
+        // No account exists -> nothing generated, nothing returned (prevents enumeration)
+        assertThat(result).isEmpty();
+        verify(resetTokenRepository, never()).save(any());
+        verify(auditLogRepository, never()).save(any());
     }
 }

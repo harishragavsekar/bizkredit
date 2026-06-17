@@ -6,6 +6,7 @@ import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.exception.ResourceNotFoundException;
 import com.bizkredit.repository.*;
 import com.bizkredit.service.FinancialAnalysisService;
+import com.bizkredit.service.ScorecardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,7 @@ class FinancialAnalysisServiceTest {
     @Mock private CreditProposalRepository proposalRepository;
     @Mock private UnderwritingDecisionRepository decisionRepository;
     @Mock private LoanApplicationRepository applicationRepository;
+    @Mock private ScorecardService scorecardService;
 
     @InjectMocks
     private FinancialAnalysisService financialService;
@@ -47,7 +49,7 @@ class FinancialAnalysisServiceTest {
                 .proposalId(1L)
                 .application(sampleApplication)
                 .analystId(2L)
-                .scorecardRating(new BigDecimal("75.0"))
+                .computedRatingScore(new BigDecimal("75.0"))
                 .riskCategory(RiskCategory.MEDIUM)
                 .suggestedAmount(new BigDecimal("900000"))
                 .status(ProposalStatus.DRAFT)

@@ -26,7 +26,17 @@ public interface UnderwritingDecisionRepository extends JpaRepository<Underwriti
     })
     Optional<UnderwritingDecision> findByProposal_ProposalId(Long proposalId);
 
+    @EntityGraph(attributePaths = {
+            "proposal",
+            "proposal.application",
+            "proposal.application.business"
+    })
     List<UnderwritingDecision> findByStatus(DecisionStatus status);
 
+    @EntityGraph(attributePaths = {
+            "proposal",
+            "proposal.application",
+            "proposal.application.business"
+    })
     List<UnderwritingDecision> findByManagerId(Long managerId);
 }

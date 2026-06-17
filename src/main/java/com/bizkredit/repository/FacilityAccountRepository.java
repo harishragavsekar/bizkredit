@@ -23,9 +23,11 @@ public interface FacilityAccountRepository extends JpaRepository<FacilityAccount
     @EntityGraph(attributePaths = {"application", "application.business", "business"})
     List<FacilityAccount> findByBusiness_BusinessId(Long businessId);
 
+    @EntityGraph(attributePaths = {"application", "application.business", "business"})
     List<FacilityAccount> findByStatus(FacilityStatus status);
 
     // Filtered query for GET /api/facilities
+    @EntityGraph(attributePaths = {"application", "application.business", "business"})
     @Query("SELECT f FROM FacilityAccount f WHERE " +
            "(:businessId IS NULL OR f.business.businessId = :businessId) AND " +
            "(:status IS NULL OR f.status = :status) AND " +
@@ -37,6 +39,7 @@ public interface FacilityAccountRepository extends JpaRepository<FacilityAccount
     );
 
     // Facilities expiring within N days (for renewal pipeline)
+    @EntityGraph(attributePaths = {"application", "application.business", "business"})
     @Query("SELECT f FROM FacilityAccount f WHERE " +
            "f.status = 'ACTIVE' AND " +
            "f.expiryDate BETWEEN :now AND :cutoff " +

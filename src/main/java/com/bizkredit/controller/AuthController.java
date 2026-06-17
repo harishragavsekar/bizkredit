@@ -35,12 +35,18 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.ok("Logged out successfully", null));
     }
 
-    // Step 1: request reset — returns 200 regardless of email existence
+    // Step 1: request reset — returns 200 regardless of email existence.
+    // In dev/test mode (bizkredit.security.expose-reset-token-in-response=true), the
+    // response also carries the raw token so the reset flow can be exercised end-to-end
+    // in Swagger without a configured email/SMS provider. Never enable that flag in a
+    // real deployment — see application.properties for why.
     @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        authService.forgotPassword(request.email());
+    public ResponseEntity<ApiResponse<ForgotPasswordResponse>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request) {
+        var devToken = authService.forgotPassword(request.email());
         return ResponseEntity.ok(ApiResponse.ok(
-                "If that email is registered, a reset token has been generated", null));
+                "If that email is registered, a reset token has been generated",
+                new ForgotPasswordResponse(devToken.orElse(null))));
     }
 
     // Step 2: submit new password with token

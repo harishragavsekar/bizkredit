@@ -21,7 +21,7 @@ public class SMELoanController {
 
     private final SMELoanService smeService;
 
-    // ── SME Business ──────────────────────────────────────────────
+    //  SME Business
 
     @PostMapping("/api/sme-businesses")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")

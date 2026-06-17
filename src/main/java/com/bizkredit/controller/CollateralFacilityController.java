@@ -22,7 +22,7 @@ public class CollateralFacilityController {
 
     private final CollateralFacilityService service;
 
-    // ── Collateral — BP2-19 ───────────────────────────────────────
+    //  Collateral
     // Nested under /api/loan-applications/{appId}/collaterals
 
     @PostMapping("/api/loan-applications/{appId}/collaterals")
@@ -99,7 +99,7 @@ public class CollateralFacilityController {
                 service.getRevaluationHistory(id)));
     }
 
-    // ── Facility — BP2-20 ─────────────────────────────────────────
+    //  Facility
 
     @PostMapping("/api/facilities")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")

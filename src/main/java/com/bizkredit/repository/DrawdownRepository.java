@@ -28,5 +28,11 @@ public interface DrawdownRepository extends JpaRepository<Drawdown, Long> {
     })
     List<Drawdown> findByFacility_FacilityId(Long facilityId);
 
+    @EntityGraph(attributePaths = {
+            "facility",
+            "facility.application",
+            "facility.application.business",
+            "facility.business"
+    })
     List<Drawdown> findByStatus(DrawdownStatus status);
 }

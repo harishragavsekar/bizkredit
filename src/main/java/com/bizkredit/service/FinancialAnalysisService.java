@@ -25,6 +25,7 @@ public class FinancialAnalysisService {
     private final LoanApplicationRepository applicationRepository;
     private final AuditLogService auditLogService;
     private final NotificationHelper notificationHelper;
+    private final ScorecardService scorecardService;
 
     @Transactional
     public FinancialStatement addStatement(Long applicationId, FinancialStatement statement) {
@@ -59,10 +60,45 @@ public class FinancialAnalysisService {
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found: " + applicationId));
         proposal.setApplication(application);
         proposal.setStatus(ProposalStatus.DRAFT);
+        applyAutoScorecard(proposal, application);
         CreditProposal saved = proposalRepository.save(proposal);
         auditLogService.log(null, "CREATE", "CreditProposal", String.valueOf(saved.getProposalId()));
         log.info("Credit proposal created for application {}", applicationId);
         return saved;
+    }
+
+    /**
+     * Looks up the active scorecard for the application's product type and runs it,
+     * populating computedRatingScore/riskCategory/computedScore/scorecardId on the proposal.
+     * No-op (leaves fields as the analyst left them) if no ACTIVE scorecard exists yet
+     * for the product, so proposal creation is never blocked on scorecard setup.
+     */
+    private void applyAutoScorecard(CreditProposal proposal, LoanApplication application) {
+        var scorecard = scorecardService.findActiveScorecardFor(application.getProductType());
+        if (scorecard == null) {
+            log.info("No ACTIVE scorecard for product type {} — skipping auto-score for application {}",
+                    application.getProductType(), application.getApplicationId());
+            return;
+        }
+        try {
+            var result = scorecardService.computeForApplication(scorecard, application.getApplicationId());
+            proposal.setScorecardId(scorecard.getScorecardId());
+            proposal.setComputedScore(result.computedScore());
+            proposal.setRatingLabel(result.rating());
+            if (result.rating() != null) {
+                proposal.setComputedRatingScore(new BigDecimal(result.computedScore()));
+            }
+            proposal.setRiskCategory(result.riskCategory());
+            proposal.setScorecardAutoComputed(true);
+            if (result.partialData()) {
+                log.warn("Auto-score for application {} used partial data (weight applied: {})",
+                        application.getApplicationId(), result.totalWeightApplied());
+            }
+        } catch (Exception e) {
+            // Never let a scoring failure block proposal creation/submission — log and move on,
+            // the analyst can still set the rating manually.
+            log.error("Auto-scoring failed for application {}: {}", application.getApplicationId(), e.getMessage());
+        }
     }
 
     // PUT /api/financial/proposals/{id} — update (Draft only)
@@ -72,8 +108,16 @@ public class FinancialAnalysisService {
         if (existing.getStatus() != ProposalStatus.DRAFT) {
             throw new BadRequestException("Only DRAFT proposals can be updated");
         }
-        if (updates.getScorecardRating() != null) existing.setScorecardRating(updates.getScorecardRating());
-        if (updates.getRiskCategory() != null) existing.setRiskCategory(updates.getRiskCategory());
+        if (updates.getRatingLabel() != null) {
+            existing.setRatingLabel(updates.getRatingLabel());
+            // An explicit manual rating means the analyst is overriding the auto-score —
+            // don't let a later submit() silently recompute and replace it.
+            existing.setScorecardAutoComputed(false);
+        }
+        if (updates.getRiskCategory() != null) {
+            existing.setRiskCategory(updates.getRiskCategory());
+            existing.setScorecardAutoComputed(false);
+        }
         if (updates.getSuggestedAmount() != null) existing.setSuggestedAmount(updates.getSuggestedAmount());
         if (updates.getSuggestedRate() != null) existing.setSuggestedRate(updates.getSuggestedRate());
         if (updates.getTenure() != null) existing.setTenure(updates.getTenure());
@@ -94,6 +138,14 @@ public class FinancialAnalysisService {
             case SANCTIONED -> "Proposal already sanctioned";
         };
         if (message != null) throw new BadRequestException(message);
+
+        // Re-score on submit (only if the analyst hasn't manually overridden the rating)
+        // so the submitted proposal reflects the latest financial statement / KYC data,
+        // not whatever was on hand at creation time.
+        if (proposal.isScorecardAutoComputed() && proposal.getApplication() != null) {
+            applyAutoScorecard(proposal, proposal.getApplication());
+        }
+
         proposal.setStatus(ProposalStatus.SUBMITTED);
         auditLogService.log(null, "STATUS_CHANGE", "CreditProposal", String.valueOf(proposalId));
         log.info("Proposal {} submitted for underwriting", proposalId);

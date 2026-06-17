@@ -85,7 +85,7 @@ public class CovenantNotificationController {
                 covenantService.getTrackingByCovenant(covenantId)));
     }
 
-    // ── EWS ──────────────────────────────────────────────────────
+    //  EWS
 
     @PostMapping("/api/facilities/{facilityId}/ews")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
@@ -142,7 +142,7 @@ public class CovenantNotificationController {
         return ResponseEntity.ok(ApiResponse.ok("EWS fetched", covenantService.getEWSByStatus(value)));
     }
 
-    // ── Notifications ─────────────────────────────────────────────
+    // Notifications
 
     @PostMapping("/api/notifications")
     @PreAuthorize("hasRole('ADMIN')")

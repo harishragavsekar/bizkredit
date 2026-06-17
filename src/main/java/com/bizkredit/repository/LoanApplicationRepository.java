@@ -21,11 +21,19 @@ public interface LoanApplicationRepository extends JpaRepository<LoanApplication
     @EntityGraph(attributePaths = {"business"})
     List<LoanApplication> findByBusiness_BusinessId(Long businessId);
 
+    @EntityGraph(attributePaths = {"business"})
     List<LoanApplication> findByStatus(ApplicationStatus status);
 
+    @EntityGraph(attributePaths = {"business"})
     List<LoanApplication> findByAssignedAnalystId(Long analystId);
 
     // Filtered query for GET /api/applications
+    // EntityGraph is required here (same as findById/findByBusiness_BusinessId above) —
+    // without it, `business` stays a lazy proxy. Since open-in-view=false, the Hibernate
+    // session is closed by the time the controller serializes the response to JSON,
+    // so Jackson hits a LazyInitializationException trying to read `business`, which
+    // GlobalExceptionHandler's default branch turns into an opaque 500.
+    @EntityGraph(attributePaths = {"business"})
     @Query("SELECT a FROM LoanApplication a WHERE " +
            "(:businessId IS NULL OR a.business.businessId = :businessId) AND " +
            "(:status IS NULL OR a.status = :status) AND " +
@@ -36,5 +44,6 @@ public interface LoanApplicationRepository extends JpaRepository<LoanApplication
             @Param("productType") ProductType productType
     );
 
+    @EntityGraph(attributePaths = {"business"})
     List<LoanApplication> findByRenewedFromFacilityId(Long facilityId);
 }

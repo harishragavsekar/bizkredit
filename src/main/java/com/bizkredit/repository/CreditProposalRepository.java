@@ -24,5 +24,6 @@ public interface CreditProposalRepository extends JpaRepository<CreditProposal, 
     @EntityGraph(attributePaths = {"application", "application.business"})
     List<CreditProposal> findByStatus(ProposalStatus status);
 
+    @EntityGraph(attributePaths = {"application", "application.business"})
     List<CreditProposal> findByAnalystId(Long analystId);
 }
