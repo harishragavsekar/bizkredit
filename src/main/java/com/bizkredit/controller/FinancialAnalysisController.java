@@ -4,6 +4,7 @@ import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.entity.*;
 import com.bizkredit.enums.ProposalStatus;
 import com.bizkredit.service.FinancialAnalysisService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Module 3: Credit Analysis & Scorecard", description = "Financial statements and credit proposals")
 @RestController
 @RequiredArgsConstructor
 public class FinancialAnalysisController {

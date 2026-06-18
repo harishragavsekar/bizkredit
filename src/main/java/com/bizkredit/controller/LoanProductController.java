@@ -4,6 +4,7 @@ import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.entity.LoanProduct;
 import com.bizkredit.enums.LoanProductStatus;
 import com.bizkredit.service.LoanProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Module 2: SME Onboarding & Loan Origination", description = "Loan product catalog")
 @RestController
 @RequestMapping("/api/loan-products")
 @RequiredArgsConstructor

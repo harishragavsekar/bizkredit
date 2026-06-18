@@ -77,6 +77,15 @@ public class ScorecardEngine {
                     "No data available for this field");
         }
 
+        String rules = param.getScoringRules() != null ? param.getScoringRules().trim() : "";
+
+        // Preferred: simple format like ">=1.5:100,>=1.0:60,<1.0:20" (numeric)
+        // or "Manufacturing:90,Trading:70,*:40" (text). First matching rule wins.
+        if (!rules.isEmpty() && !rules.startsWith("{")) {
+            return scoreSimpleFormat(param, rules, rawValue);
+        }
+
+        // Fallback: legacy JSON format {"bands":[...]} or {"values":{...}}
         ScoringRule rule;
         try {
             rule = objectMapper.readValue(param.getScoringRules(), ScoringRule.class);
@@ -97,6 +106,88 @@ public class ScorecardEngine {
         return new ParameterResult(param.getParameterName(), param.getFieldSource(),
                 param.getFieldName(), rawValue, BigDecimal.ZERO, false,
                 "scoringRules has neither 'bands' nor 'values'");
+    }
+
+    // Parses and applies the simple rule format. Each comma-separated rule is "condition:points".
+    // Numeric conditions: >=X, >X, <=X, <X, =X. Text conditions: exact word, or * as fallback.
+    // First matching rule wins (so put strictest conditions first). Points are 0-100.
+    private ParameterResult scoreSimpleFormat(ScorecardModel.ScorecardParameter param,
+                                              String rules, Object rawValue) {
+        BigDecimal numeric = ScoringFieldResolver.asNumeric(rawValue);
+        String text = rawValue.toString().trim();
+        String fallbackPoints = null;
+
+        try {
+            for (String rawRule : rules.split(",")) {
+                String r = rawRule.trim();
+                if (r.isEmpty()) continue;
+
+                int colon = r.lastIndexOf(':');
+                if (colon < 0) continue; // skip malformed piece
+                String condition = r.substring(0, colon).trim();
+                String pointsStr = r.substring(colon + 1).trim();
+                BigDecimal points = new BigDecimal(pointsStr);
+
+                // Text fallback marker
+                if (condition.equals("*")) {
+                    fallbackPoints = pointsStr;
+                    continue;
+                }
+
+                // Numeric conditions
+                if (condition.startsWith(">=") || condition.startsWith("<=")
+                        || condition.startsWith(">") || condition.startsWith("<")
+                        || condition.startsWith("=")) {
+                    if (numeric == null) continue; // numeric rule but value isn't a number
+                    String op;
+                    String numPart;
+                    if (condition.startsWith(">=") || condition.startsWith("<=")) {
+                        op = condition.substring(0, 2);
+                        numPart = condition.substring(2).trim();
+                    } else {
+                        op = condition.substring(0, 1);
+                        numPart = condition.substring(1).trim();
+                    }
+                    BigDecimal threshold = new BigDecimal(numPart);
+                    int cmp = numeric.compareTo(threshold);
+                    boolean match = switch (op) {
+                        case ">=" -> cmp >= 0;
+                        case "<=" -> cmp <= 0;
+                        case ">" -> cmp > 0;
+                        case "<" -> cmp < 0;
+                        case "=" -> cmp == 0;
+                        default -> false;
+                    };
+                    if (match) {
+                        return new ParameterResult(param.getParameterName(), param.getFieldSource(),
+                                param.getFieldName(), numeric, points, true, null);
+                    }
+                } else {
+                    // Text exact match (case-insensitive)
+                    if (condition.equalsIgnoreCase(text)) {
+                        return new ParameterResult(param.getParameterName(), param.getFieldSource(),
+                                param.getFieldName(), rawValue, points, true, null);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.warn("Could not parse simple scoringRules for parameter '{}': {}",
+                    param.getParameterName(), e.getMessage());
+            return new ParameterResult(param.getParameterName(), param.getFieldSource(),
+                    param.getFieldName(), rawValue, BigDecimal.ZERO, false,
+                    "Invalid scoringRules configuration");
+        }
+
+        // No rule matched — use text fallback (*) if one was given
+        if (fallbackPoints != null) {
+            return new ParameterResult(param.getParameterName(), param.getFieldSource(),
+                    param.getFieldName(), rawValue, new BigDecimal(fallbackPoints), true,
+                    "Used fallback (*)");
+        }
+
+        return new ParameterResult(param.getParameterName(), param.getFieldSource(),
+                param.getFieldName(), rawValue, BigDecimal.ZERO, false,
+                "Value did not match any rule");
     }
 
     private ParameterResult scoreNumericBands(ScorecardModel.ScorecardParameter param, ScoringRule rule, Object rawValue) {

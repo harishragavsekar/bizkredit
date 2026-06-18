@@ -2,6 +2,7 @@ package com.bizkredit.controller;
 
 import com.bizkredit.dto.*;
 import com.bizkredit.service.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Module 1: Auth, Users, Scope & Audit", description = "Authentication, registration, and password reset")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

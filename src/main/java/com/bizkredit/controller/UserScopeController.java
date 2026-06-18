@@ -5,12 +5,14 @@ import com.bizkredit.dto.UserScopeDTOs.UserScopeRequest;
 import com.bizkredit.dto.UserScopeDTOs.UserScopeResponse;
 import com.bizkredit.entity.User;
 import com.bizkredit.service.UserScopeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Module 1: Auth, Users, Scope & Audit", description = "User scope and permission assignment")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

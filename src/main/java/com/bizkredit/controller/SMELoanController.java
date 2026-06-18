@@ -6,6 +6,7 @@ import com.bizkredit.enums.ApplicationStatus;
 import com.bizkredit.enums.ProductType;
 import com.bizkredit.enums.VerificationStatus;
 import com.bizkredit.service.SMELoanService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Module 2: SME Onboarding & Loan Origination", description = "Business/promoter onboarding, group companies, loan applications")
 @RestController
 @RequiredArgsConstructor
 public class SMELoanController {

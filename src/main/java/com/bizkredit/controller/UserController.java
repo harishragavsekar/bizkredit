@@ -5,6 +5,7 @@ import com.bizkredit.entity.AuditLog;
 import com.bizkredit.entity.User;
 import com.bizkredit.enums.Role;
 import com.bizkredit.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Module 1: Auth, Users, Scope & Audit", description = "User management and roles")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

@@ -6,6 +6,7 @@ import com.bizkredit.enums.CollateralStatus;
 import com.bizkredit.enums.FacilityStatus;
 import com.bizkredit.enums.ProductType;
 import com.bizkredit.service.CollateralFacilityService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
+@Tag(name = "Module 4: Facility, Disbursement & Repayment", description = "Collateral and facility accounts")
 @RestController
 @RequiredArgsConstructor
 public class CollateralFacilityController {

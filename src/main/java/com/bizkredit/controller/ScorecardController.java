@@ -5,6 +5,7 @@ import com.bizkredit.entity.ScorecardModel;
 import com.bizkredit.enums.ProductType;
 import com.bizkredit.enums.ScorecardStatus;
 import com.bizkredit.service.ScorecardService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Module 3: Credit Analysis & Scorecard", description = "Scorecard rules and scoring engine")
 @RestController
 @RequestMapping("/api/scorecards")
 @RequiredArgsConstructor

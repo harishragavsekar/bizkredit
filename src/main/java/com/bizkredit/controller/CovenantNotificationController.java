@@ -4,6 +4,7 @@ import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.entity.*;
 import com.bizkredit.enums.*;
 import com.bizkredit.service.CovenantNotificationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Module 5: Risk Monitoring & Portfolio", description = "Covenant tracking and notifications")
 @RestController
 @RequiredArgsConstructor
 public class CovenantNotificationController {

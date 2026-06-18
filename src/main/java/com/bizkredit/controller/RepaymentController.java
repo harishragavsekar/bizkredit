@@ -3,6 +3,7 @@ package com.bizkredit.controller;
 import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.entity.Repayment;
 import com.bizkredit.service.RepaymentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Module 4: Facility, Disbursement & Repayment", description = "Repayment recording and tracking")
 @RestController
 @RequestMapping("/api/repayments")
 @RequiredArgsConstructor

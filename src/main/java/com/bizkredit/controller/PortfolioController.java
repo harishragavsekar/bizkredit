@@ -2,6 +2,7 @@ package com.bizkredit.controller;
 
 import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.service.PortfolioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name = "Module 5: Risk Monitoring & Portfolio", description = "Portfolio-wide dashboards and summaries")
 @RestController
 @RequestMapping("/api/portfolio")
 @RequiredArgsConstructor

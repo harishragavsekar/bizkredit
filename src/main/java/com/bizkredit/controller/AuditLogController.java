@@ -3,6 +3,7 @@ package com.bizkredit.controller;
 import com.bizkredit.dto.ApiResponse;
 import com.bizkredit.entity.AuditLog;
 import com.bizkredit.service.AuditLogService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
+@Tag(name = "Module 1: Auth, Users, Scope & Audit", description = "Audit log viewing")
 @RestController
 @RequestMapping("/api/audit-logs")
 @RequiredArgsConstructor
