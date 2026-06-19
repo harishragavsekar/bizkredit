@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Module 5: Risk Monitoring & Portfolio", description = "Covenant tracking and notifications")
+@Tag(name = "Module 5: Risk Monitoring & Portfolio")
 @RestController
 @RequiredArgsConstructor
 public class CovenantNotificationController {

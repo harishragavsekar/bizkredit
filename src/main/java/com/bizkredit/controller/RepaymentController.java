@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Module 4: Facility, Disbursement & Repayment", description = "Repayment recording and tracking")
+@Tag(name = "Module 4: Facility, Disbursement & Repayment")
 @RestController
 @RequestMapping("/api/repayments")
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class RepaymentController {
 
     private final RepaymentService repaymentService;
 
-    // ✅ RECORD REPAYMENT
+    // RECORD REPAYMENT
     @PostMapping
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<Object>> recordRepayment(
@@ -38,7 +38,7 @@ public class RepaymentController {
                         )));
     }
 
-    // ✅ GET REPAYMENTS
+    // GET REPAYMENTS
     @GetMapping
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<?>> getRepayments(
@@ -59,7 +59,7 @@ public class RepaymentController {
                 .body(ApiResponse.error("Provide facilityId or drawdownId"));
     }
 
-    // ✅ GET BY ID
+    //  GET BY ID
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<Object>> getById(@PathVariable Long id) {
@@ -76,7 +76,7 @@ public class RepaymentController {
         ));
     }
 
-    // ✅ ✅ VERIFY REPAYMENT (FINAL FIX HERE)
+    //  VERIFY REPAYMENT (FINAL FIX HERE)
     @PutMapping("/{id}/verify")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<Object>> verify(
@@ -94,7 +94,7 @@ public class RepaymentController {
         ));
     }
 
-    // ✅ REVERSE REPAYMENT
+    //  REVERSE REPAYMENT
     @PutMapping("/{id}/reverse")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Object>> reverse(@PathVariable Long id) {

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Tag(name = "Module 4: Facility, Disbursement & Repayment", description = "Collateral and facility accounts")
+@Tag(name = "Module 4: Facility, Disbursement & Repayment")
 @RestController
 @RequiredArgsConstructor
 public class CollateralFacilityController {

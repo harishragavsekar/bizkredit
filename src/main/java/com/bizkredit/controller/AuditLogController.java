@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@Tag(name = "Module 1: Auth, Users, Scope & Audit", description = "Audit log viewing")
+@Tag(name = "Module 1: Auth, Users, Scope & Audit")
 @RestController
 @RequestMapping("/api/audit-logs")
 @RequiredArgsConstructor

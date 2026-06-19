@@ -2,15 +2,15 @@ package com.bizkredit.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-// Configures Swagger UI to show the "Authorize" button for JWT
-// Lets you paste a token once and send it on all protected endpoints
 @Configuration
 public class OpenApiConfig {
 
@@ -22,151 +22,207 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("BizKredit API")
                         .description("SME Business Loan & Working Capital Platform")
-                        .version("v1"))
-                // Apply the security scheme globally
+                        .version("1.0.0")
+                        .contact(new Contact()
+                                .name("BizKredit Team")
+                                .email("support@bizkredit.com"))
+                        .license(new License()
+                                .name("Proprietary")))
                 .addSecurityItem(new SecurityRequirement().addList(SCHEME_NAME))
                 .components(new Components()
                         .addSecuritySchemes(SCHEME_NAME, new SecurityScheme()
                                 .name(SCHEME_NAME)
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
-                                .bearerFormat("JWT")));
+                                .bearerFormat("JWT")
+                                .description("Paste the JWT returned by POST /api/auth/login")));
     }
 
     /*
-     * Team module groups, shown as a dropdown in the top-right corner of Swagger UI.
-     * Each group lists EXACT sub-paths rather than a parent wildcard, because several
-     * controllers share the same path prefix for different sub-resources — e.g.
-     * /api/loan-applications/{appId}/** is used by BOTH SMELoanController (the
-     * application itself + documents) and FinancialAnalysisController (financial
-     * statements + credit proposals). A wildcard there would pull both groups'
-     * endpoints into one, so each rule below is deliberately explicit.
+     * All APIs
      */
+    @Bean
+    public GroupedOpenApi allApisApi() {
+        return GroupedOpenApi.builder()
+                .group("00-all")
+                .displayName("All APIs")
+                .pathsToMatch("/api/**")
+                .build();
+    }
 
+    /*
+     * Module 1 — Auth, Users, Scope & Audit
+     * Owner: Harish
+     *
+     * Controllers:
+     * - AuthController
+     * - UserController
+     * - UserScopeController
+     * - AuditLogController
+     */
     @Bean
     public GroupedOpenApi group1AuthUsersScopeAuditApi() {
         return GroupedOpenApi.builder()
                 .group("01-auth-users-scope-audit")
-                .displayName("1. Auth, Users, Scope & Audit")
+                .displayName("1. Auth, Users, Scope & Audit - Harish")
                 .pathsToMatch(
+                        "/api/auth",
                         "/api/auth/**",
+
+                        "/api/users",
                         "/api/users/**",
+
+                        "/api/user-scopes",
+                        "/api/user-scopes/**",
+
+                        "/api/audit-logs",
                         "/api/audit-logs/**"
                 )
                 .build();
     }
 
+
     @Bean
     public GroupedOpenApi group2OriginationApi() {
         return GroupedOpenApi.builder()
                 .group("02-sme-origination")
-                .displayName("2. SME Onboarding & Loan Origination")
+                .displayName("2. SME Onboarding & Loan Origination - Dileep")
                 .pathsToMatch(
+                        "/api/sme-businesses",
                         "/api/sme-businesses/**",
+
+                        "/api/loan-products",
                         "/api/loan-products/**",
 
                         "/api/loan-applications",
-                        "/api/loan-applications/{id}",
-                        "/api/loan-applications/{id}/submit",
-                        "/api/loan-applications/{id}/assign",
-                        "/api/loan-applications/{id}/status",
+                        "/api/loan-applications/*",
 
-                        "/api/loan-applications/{appId}/documents",
-                        "/api/loan-applications/{appId}/documents/{docId}",
-                        "/api/loan-applications/{appId}/documents/{docId}/verify",
-                        "/api/loan-applications/{appId}/documents/{docId}/flag-deficient",
-                        "/api/loan-applications/{appId}/documents/{docId}/reject"
+                        "/api/loan-applications/*/submit",
+                        "/api/loan-applications/*/assign",
+                        "/api/loan-applications/*/status",
+
+                        "/api/loan-applications/*/documents",
+                        "/api/loan-applications/*/documents/*",
+                        "/api/loan-applications/*/documents/*/verify",
+                        "/api/loan-applications/*/documents/*/flag-deficient",
+                        "/api/loan-applications/*/documents/*/reject"
                 )
                 .build();
     }
+
 
     @Bean
     public GroupedOpenApi group3CreditAnalysisApi() {
         return GroupedOpenApi.builder()
                 .group("03-credit-analysis-scorecard")
-                .displayName("3. Credit Analysis & Scorecard")
+                .displayName("3. Credit Analysis & Scorecard - Subishka")
                 .pathsToMatch(
+                        "/api/scorecards",
                         "/api/scorecards/**",
-                        "/api/credit-proposals/**",
 
-                        "/api/loan-applications/{appId}/financial-statements",
-                        "/api/loan-applications/{appId}/financial-statements/{id}",
-                        "/api/loan-applications/{appId}/financial-statements/{id}/verify",
+                        "/api/loan-applications/*/financial-statements",
+                        "/api/loan-applications/*/financial-statements/*",
+                        "/api/loan-applications/*/financial-statements/*/verify",
 
-                        "/api/loan-applications/{appId}/credit-proposals",
-                        "/api/loan-applications/{appId}/credit-proposals/{id}",
-                        "/api/loan-applications/{appId}/credit-proposals/{id}/submit"
+                        "/api/loan-applications/*/credit-proposals",
+                        "/api/loan-applications/*/credit-proposals/*",
+                        "/api/loan-applications/*/credit-proposals/*/submit",
+
+                        "/api/credit-proposals",
+                        "/api/credit-proposals/**"
                 )
                 .build();
     }
 
+    /*
+     * Module 4 — Facility, Disbursement & Repayment
+     * Owner: Affrina
+     *
+     * Controllers:
+     * - CollateralFacilityController
+     * - RepaymentController
+     * - MakerCheckerController
+     */
     @Bean
     public GroupedOpenApi group4FacilityRepaymentApi() {
         return GroupedOpenApi.builder()
                 .group("04-facility-disbursement-repayment")
-                .displayName("4. Facility, Disbursement & Repayment")
+                .displayName("4. Facility, Disbursement & Repayment - Affrina")
                 .pathsToMatch(
-                        "/api/loan-applications/{appId}/collaterals",
-                        "/api/loan-applications/{appId}/collaterals/{id}",
-                        "/api/loan-applications/{appId}/collaterals/{id}/status",
-                        "/api/loan-applications/{appId}/collateral-coverage",
-                        "/api/loan-applications/{appId}/collaterals/{id}/revalue",
-                        "/api/loan-applications/{appId}/collaterals/{id}/revaluations",
+                        "/api/loan-applications/*/collaterals",
+                        "/api/loan-applications/*/collaterals/*",
+                        "/api/loan-applications/*/collaterals/*/status",
+                        "/api/loan-applications/*/collateral-coverage",
+                        "/api/loan-applications/*/collaterals/*/revalue",
+                        "/api/loan-applications/*/collaterals/*/revaluations",
 
                         "/api/facilities",
-                        "/api/facilities/{id}",
-                        "/api/facilities/business/{businessId}",
-                        "/api/facilities/{id}/status",
+                        "/api/facilities/*",
+                        "/api/facilities/business/*",
+                        "/api/facilities/*/status",
                         "/api/facilities/expiring",
-                        "/api/facilities/{facilityId}/renew",
-                        "/api/facilities/{facilityId}/renewal-history",
-                        "/api/facilities/{facilityId}/drawdowns",
-                        "/api/facilities/{facilityId}/drawdowns/{id}/approve",
-                        "/api/facilities/{facilityId}/drawdowns/{id}/disburse",
-                        "/api/facilities/{facilityId}/drawdowns/{id}/repay",
-                        "/api/facilities/{facilityId}/drawdowns/{id}/overdue",
-                        "/api/facilities/{facilityId}/utilisation",
-                        "/api/facilities/{facilityId}/utilisation/{id}",
+                        "/api/facilities/*/renew",
+                        "/api/facilities/*/renewal-history",
 
+                        "/api/facilities/*/drawdowns",
+                        "/api/facilities/*/drawdowns/*/approve",
+                        "/api/facilities/*/drawdowns/*/disburse",
+                        "/api/facilities/*/drawdowns/*/repay",
+                        "/api/facilities/*/drawdowns/*/overdue",
+
+                        "/api/facilities/*/utilisation",
+                        "/api/facilities/*/utilisation/*",
+
+                        "/api/repayments",
                         "/api/repayments/**",
+
+                        "/api/maker-checker",
                         "/api/maker-checker/**"
                 )
                 .build();
     }
 
+    /*
+     * Module 5 — Risk Monitoring & Portfolio
+     * Owner: Harshit
+     *
+     * Controllers:
+     * - NPAController
+     * - CovenantTemplateController
+     * - CovenantNotificationController
+     * - PortfolioController
+     */
     @Bean
     public GroupedOpenApi group5RiskPortfolioApi() {
         return GroupedOpenApi.builder()
                 .group("05-risk-monitoring-portfolio")
-                .displayName("5. Risk Monitoring & Portfolio")
+                .displayName("5. Risk Monitoring & Portfolio - Harshit")
                 .pathsToMatch(
+                        "/api/npa",
                         "/api/npa/**",
+
+                        "/api/covenant-templates",
                         "/api/covenant-templates/**",
 
-                        // These sit under /api/facilities/{facilityId}/... like Module 4's
-                        // facility paths do, but are owned by CovenantNotificationController
-                        // (covenants/EWS), not CollateralFacilityController — listed
-                        // explicitly here so they don't get swept into Module 4 instead.
-                        "/api/facilities/{facilityId}/covenants",
-                        "/api/facilities/{facilityId}/covenants/{id}",
-                        "/api/facilities/{facilityId}/covenants/{id}/status",
-                        "/api/facilities/{facilityId}/covenants/{id}/waive",
-                        "/api/covenants/{covenantId}/tracking",
-                        "/api/facilities/{facilityId}/ews",
+                        "/api/facilities/*/covenants",
+                        "/api/facilities/*/covenants/*",
+                        "/api/facilities/*/covenants/*/status",
+                        "/api/facilities/*/covenants/*/waive",
+
+                        "/api/covenants/*/tracking",
+
+                        "/api/facilities/*/ews",
+                        "/api/facilities/*/ews/**",
+
+                        "/api/ews",
                         "/api/ews/**",
+
+                        "/api/notifications",
                         "/api/notifications/**",
 
+                        "/api/portfolio",
                         "/api/portfolio/**"
                 )
-                .build();
-    }
-
-    @Bean
-    public GroupedOpenApi group6AllApisApi() {
-        return GroupedOpenApi.builder()
-                .group("06-all-apis")
-                .displayName("6. All APIs")
-                .pathsToMatch("/**")
                 .build();
     }
 }

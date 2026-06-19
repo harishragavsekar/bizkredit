@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Module 3: Credit Analysis & Scorecard", description = "Scorecard rules and scoring engine")
+@Tag(name = "Module 3: Credit Analysis & Scorecard")
 @RestController
 @RequestMapping("/api/scorecards")
 @RequiredArgsConstructor

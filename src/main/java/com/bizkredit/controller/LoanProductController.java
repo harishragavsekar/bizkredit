@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Module 2: SME Onboarding & Loan Origination", description = "Loan product catalog")
+@Tag(name = "Module 2: SME Onboarding & Loan Origination")
 @RestController
 @RequestMapping("/api/loan-products")
 @RequiredArgsConstructor

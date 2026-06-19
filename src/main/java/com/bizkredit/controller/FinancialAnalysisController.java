@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Module 3: Credit Analysis & Scorecard", description = "Financial statements and credit proposals")
+@Tag(name = "Module 3: Credit Analysis & Scorecard")
 @RestController
 @RequiredArgsConstructor
 public class FinancialAnalysisController {

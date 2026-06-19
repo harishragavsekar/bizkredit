@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Module 1: Auth, Users, Scope & Audit", description = "User management and roles")
+@Tag(name = "Module 1: Auth, Users, Scope & Audit")
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor

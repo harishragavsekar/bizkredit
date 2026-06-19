@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Module 2: SME Onboarding & Loan Origination", description = "Business/promoter onboarding, group companies, loan applications")
+@Tag(name = "Module 2: SME Onboarding & Loan Origination")
 @RestController
 @RequiredArgsConstructor
 public class SMELoanController {
@@ -122,7 +122,7 @@ public class SMELoanController {
                 smeService.getGroupCompaniesByBusiness(id)));
     }
 
-    // ── Loan Application ──────────────────────────────────────────
+    // Loan Application
 
     @PostMapping("/api/loan-applications")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")
@@ -176,7 +176,7 @@ public class SMELoanController {
         return ResponseEntity.ok(ApiResponse.ok("Status updated", smeService.updateStatus(id, value)));
     }
 
-    // ── Documents ─────────────────────────────────────────────────
+    // Documents
 
     @PostMapping("/api/loan-applications/{appId}/documents")
     @PreAuthorize("hasAnyRole('SME_APPLICANT','RELATIONSHIP_MANAGER','ADMIN')")

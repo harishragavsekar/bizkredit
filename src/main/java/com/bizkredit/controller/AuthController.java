@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Module 1: Auth, Users, Scope & Audit", description = "Authentication, registration, and password reset")
+@Tag(name = "Module 1: Auth, Users, Scope & Audit")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

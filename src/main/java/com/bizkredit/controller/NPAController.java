@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Module 5: Risk Monitoring & Portfolio", description = "NPA classification and provisioning")
+@Tag(name = "Module 5: Risk Monitoring & Portfolio")
 @RestController
 @RequestMapping("/api/npa")
 @RequiredArgsConstructor

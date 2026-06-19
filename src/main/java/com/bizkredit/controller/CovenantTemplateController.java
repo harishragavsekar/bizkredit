@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Module 5: Risk Monitoring & Portfolio", description = "Covenant templates")
+@Tag(name = "Module 5: Risk Monitoring & Portfolio")
 @RestController
 @RequestMapping("/api/covenant-templates")
 @RequiredArgsConstructor
