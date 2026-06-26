@@ -47,6 +47,5 @@ public class User {
     @Builder.Default
     private Integer failedLoginAttempts = 0;
 
-    // BP2-40 RBAC — region-level data scoping
     private String region;
 }

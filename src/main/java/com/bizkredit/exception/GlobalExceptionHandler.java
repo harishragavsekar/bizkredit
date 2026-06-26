@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handle(Exception ex) {
         log.error("Exception caught: {} - {}", ex.getClass().getSimpleName(), ex.getMessage());
 
-        // Java 21 pattern matching switch
+
         return switch (ex) {
             case ResourceNotFoundException e ->
                 ResponseEntity.status(HttpStatus.NOT_FOUND)

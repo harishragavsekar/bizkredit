@@ -24,13 +24,13 @@
 
     <dependencies>
 
-        <!-- Spring Boot Web - for building REST APIs -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Spring Data JPA - for database operations using Hibernate -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -106,7 +106,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- SpringDoc - generates Swagger UI at /swagger-ui.html -->
+
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>

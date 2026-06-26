@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+// Handles authentication, registration, logout, and password reset operations
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -42,15 +43,30 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService customUserDetailsService;
 
-    // DEV/TEST ONLY — see application.properties for the security tradeoff this implies.
+    // Allows reset token to be returned only in dev/test environment
     @Value("${bizkredit.security.expose-reset-token-in-response:false}")
     private boolean exposeResetTokenInResponse;
 
     private static final int MAX_FAILED_ATTEMPTS = 5;
+
+    // Password rule: minimum 8 characters with uppercase, lowercase, digit, and special character
     private static final Pattern PASSWORD_POLICY = Pattern.compile(
             "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&#])[A-Za-z\\d@$!%*?&#]{8,}$"
     );
 
+    // Builds JWT token with user-specific claims
+    private String buildToken(User user) {
+        var userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getUserId());
+        claims.put("role", user.getRole().name());
+        claims.put("branchId", user.getBranchId());
+
+        return jwtUtil.generateTokenWithClaims(userDetails, claims);
+    }
+
+    // Registers new user, stores encoded password, creates audit log, and returns JWT token
     @Transactional
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -83,14 +99,16 @@ public class AuthService {
                 saved.getName(), saved.getEmail(), saved.getRole());
     }
 
+    // Authenticates user using email/password and returns JWT token on success
     @Transactional
     public AuthResponse login(LoginRequest request) {
-        // Attempt authentication — BadCredentialsException maps to 401 via GlobalExceptionHandler
         try {
+            // Spring Security verifies email and password using AuthenticationManager
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.email(), request.password()));
-        } catch (BadCredentialsException e) {
-            // Increment failed attempts and potentially lock account
+        }
+        catch (BadCredentialsException e) {
+            // Increase failed login count and lock account after maximum failed attempts
             userRepository.findByEmail(request.email()).ifPresent(u -> {
                 int attempts = (u.getFailedLoginAttempts() == null ? 0 : u.getFailedLoginAttempts()) + 1;
                 u.setFailedLoginAttempts(attempts);
@@ -99,6 +117,8 @@ public class AuthService {
                     log.warn("Account locked after {} failed attempts: {}", attempts, u.getEmail());
                 }
                 userRepository.save(u);
+
+                // Save failed login audit record
                 auditLogRepository.save(AuditLog.builder()
                         .userId(u.getUserId())
                         .action("LOGIN_FAILED")
@@ -106,24 +126,27 @@ public class AuthService {
                         .recordId(String.valueOf(u.getUserId()))
                         .build());
             });
-            throw e; // rethrow — GlobalExceptionHandler maps BadCredentialsException to 401
+            throw e;
         }
 
+        // Fetch authenticated user from database
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
 
-        // Check account status — return 403 for locked/inactive
+        // Prevent login for locked or inactive accounts
         if (!user.getStatus().equals("Active")) {
             throw new ForbiddenException("Account is " + user.getStatus() + ". Contact admin.");
         }
 
-        // Reset failed attempts on successful login
+        // Reset failed attempts after successful login
         user.setFailedLoginAttempts(0);
         userRepository.save(user);
 
+        // Generate JWT token after successful login
         String token = buildToken(user);
         log.info("User logged in: {}", user.getEmail());
 
+        // Save successful login audit record
         auditLogRepository.save(AuditLog.builder()
                 .userId(user.getUserId())
                 .action("LOGIN")
@@ -135,7 +158,7 @@ public class AuthService {
                 user.getName(), user.getEmail(), user.getRole());
     }
 
-    // Stateless logout — token invalidation is client-side; this endpoint logs the action
+    // Logs logout action; JWT invalidation is handled on client side in stateless authentication
     @Transactional
     public void logout(Long userId) {
         auditLogRepository.save(AuditLog.builder()
@@ -147,11 +170,7 @@ public class AuthService {
         log.info("User logged out: {}", userId);
     }
 
-    // Step 1 of password reset — generates a single-use token.
-    // Always behaves identically from the caller's perspective whether or not the email
-    // exists (prevents account enumeration) — EXCEPT for the returned token itself, which
-    // is only ever present when bizkredit.security.expose-reset-token-in-response=true
-    // (dev/test convenience) and the email matched a real account.
+    // Creates password reset token if email exists
     @Transactional
     public Optional<String> forgotPassword(String email) {
         Optional<User> userOpt = userRepository.findByEmail(email);
@@ -160,9 +179,10 @@ public class AuthService {
         }
         User user = userOpt.get();
 
-        // Delete any existing unused tokens for this user
+        // Remove previous unused reset tokens for the user
         resetTokenRepository.deleteByUserId(user.getUserId());
 
+        // Generate and save new single-use reset token
         String token = UUID.randomUUID().toString();
         resetTokenRepository.save(PasswordResetToken.builder()
                 .token(token)
@@ -171,11 +191,10 @@ public class AuthService {
                 .used(false)
                 .build());
 
-        // Always log server-side regardless of the dev-mode flag, so the token is
-        // recoverable from logs even if exposeResetTokenInResponse is off.
         log.info("Password reset token generated for user {}: {} (expires in 15 min)",
                 user.getEmail(), token);
 
+        // Save password reset request audit record
         auditLogRepository.save(AuditLog.builder()
                 .userId(user.getUserId())
                 .action("PASSWORD_RESET_REQUESTED")
@@ -183,43 +202,51 @@ public class AuthService {
                 .recordId(String.valueOf(user.getUserId()))
                 .build());
 
+        // Return token only when enabled for dev/test
         return exposeResetTokenInResponse ? Optional.of(token) : Optional.empty();
     }
 
-    // Step 2 of password reset — validate token and set new password
+    // Validates reset token and updates user password
     @Transactional
     public void resetPassword(String token, String newPassword) {
         PasswordResetToken resetToken = resetTokenRepository.findByToken(token)
                 .orElseThrow(() -> new BadRequestException("Invalid or expired reset token"));
 
+        // Reject already used token
         if (resetToken.isUsed()) {
             throw new BadRequestException("Reset token has already been used");
         }
 
+        // Reject expired token
         if (resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new BadRequestException("Reset token has expired");
         }
 
+        // Validate new password against password policy
         if (!PASSWORD_POLICY.matcher(newPassword).matches()) {
             throw new BadRequestException(
                     "Password must be at least 8 characters with uppercase, lowercase, digit, and special character");
         }
 
+        // Fetch user linked with reset token
         User user = userRepository.findById(resetToken.getUserId())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
+        // Encode and update new password
         user.setPassword(passwordEncoder.encode(newPassword));
-        // Unlock account on successful reset
+
+        // Unlock account after successful password reset
         if ("Locked".equals(user.getStatus())) {
             user.setStatus("Active");
             user.setFailedLoginAttempts(0);
         }
         userRepository.save(user);
 
-        // Mark token as used (single-use)
+        // Mark reset token as used
         resetToken.setUsed(true);
         resetTokenRepository.save(resetToken);
 
+        // Save password reset audit record
         auditLogRepository.save(AuditLog.builder()
                 .userId(user.getUserId())
                 .action("PASSWORD_RESET")
@@ -230,13 +257,5 @@ public class AuthService {
         log.info("Password reset successfully for user {}", user.getEmail());
     }
 
-    // Builds JWT with userId, role, branchId claims
-    private String buildToken(User user) {
-        var userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", user.getUserId());
-        claims.put("role", user.getRole().name());
-        claims.put("branchId", user.getBranchId());
-        return jwtUtil.generateTokenWithClaims(userDetails, claims);
-    }
+
 }

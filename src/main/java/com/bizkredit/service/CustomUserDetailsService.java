@@ -7,20 +7,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-// Separate UserDetailsService to break the circular dependency
-// SecurityConfig -> UserDetailsService -> UserRepository (no circular ref)
+// Separate UserDetailsService class
+// SecurityConfig -> UserDetailsService -> UserRepository
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor  // Generates constructor for userRepository
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserRepository userRepository; // Inject repository
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        // Fetch user or throw exception if not found
         var user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
 
-        return org.springframework.security.core.userdetails.User.builder()
+        return org.springframework.security.core.userdetails.User
+                .builder() // Spring Security's built-in builder
                 .username(user.getEmail())
                 .password(user.getPassword())
                 .roles(user.getRole().name())

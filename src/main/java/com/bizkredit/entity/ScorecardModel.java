@@ -50,7 +50,7 @@ public class ScorecardModel {
     @Builder.Default
     private List<RatingBand> ratingBands = new ArrayList<>();
 
-    // ── Embeddable sub-entities ───────────────────────────────────
+    // ── Embeddable sub-entities
 
     @Embeddable
     @Data

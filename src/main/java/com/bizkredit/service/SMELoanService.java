@@ -29,7 +29,7 @@ public class SMELoanService {
     private final AuditLogService auditLogService;
     private final NotificationHelper notificationHelper;
 
-    // ── 4.2 SME Business ─────────────────────────────────────────
+    // 4.2 SME Business
 
     @Transactional
     public SMEBusiness registerBusiness(SMEBusiness business) {

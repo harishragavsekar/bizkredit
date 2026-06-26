@@ -5,7 +5,9 @@ import com.bizkredit.enums.*;
 import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.exception.ResourceNotFoundException;
 import com.bizkredit.repository.*;
+import com.bizkredit.service.AuditLogService;
 import com.bizkredit.service.FinancialAnalysisService;
+import com.bizkredit.service.NotificationHelper;
 import com.bizkredit.service.ScorecardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,10 @@ class FinancialAnalysisServiceTest {
     @Mock private LoanApplicationRepository applicationRepository;
     @Mock private ScorecardService scorecardService;
 
+
+    @Mock private AuditLogService auditLogService;
+    @Mock private NotificationHelper notificationHelper;
+
     @InjectMocks
     private FinancialAnalysisService financialService;
 
@@ -43,6 +49,7 @@ class FinancialAnalysisServiceTest {
                 .productType(ProductType.TERM_LOAN)
                 .requestedAmount(new BigDecimal("1000000"))
                 .status(ApplicationStatus.IN_REVIEW)
+                .assignedAnalystId(10L)
                 .build();
 
         sampleProposal = CreditProposal.builder()
@@ -53,6 +60,7 @@ class FinancialAnalysisServiceTest {
                 .riskCategory(RiskCategory.MEDIUM)
                 .suggestedAmount(new BigDecimal("900000"))
                 .status(ProposalStatus.DRAFT)
+                .scorecardAutoComputed(true)
                 .build();
     }
 
@@ -75,13 +83,16 @@ class FinancialAnalysisServiceTest {
         assertThat(saved.getCurrentRatio()).isNotNull();
         assertThat(saved.getDebtEquityRatio()).isNotNull();
         assertThat(saved.getDscr()).isNotNull();
+
+        verify(auditLogService).log(any(), eq("CREATE"), eq("FinancialStatement"), any());
     }
 
     @Test
     void addStatement_applicationNotFound_throwsResourceNotFound() {
         when(applicationRepository.findById(99L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> financialService.addStatement(99L, new FinancialStatement()))
+        assertThatThrownBy(() ->
+                financialService.addStatement(99L, new FinancialStatement()))
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
@@ -93,6 +104,8 @@ class FinancialAnalysisServiceTest {
         CreditProposal saved = financialService.createProposal(1L, sampleProposal);
 
         assertThat(saved.getStatus()).isEqualTo(ProposalStatus.DRAFT);
+
+        verify(auditLogService).log(any(), eq("CREATE"), eq("CreditProposal"), any());
     }
 
     @Test
@@ -103,6 +116,8 @@ class FinancialAnalysisServiceTest {
         CreditProposal submitted = financialService.submitProposal(1L);
 
         assertThat(submitted.getStatus()).isEqualTo(ProposalStatus.SUBMITTED);
+
+        verify(auditLogService).log(any(), eq("STATUS_CHANGE"), eq("CreditProposal"), any());
     }
 
     @Test
@@ -110,8 +125,8 @@ class FinancialAnalysisServiceTest {
         sampleProposal.setStatus(ProposalStatus.SUBMITTED);
         when(proposalRepository.findById(1L)).thenReturn(Optional.of(sampleProposal));
 
-        // Service now returns specific message per status
-        assertThatThrownBy(() -> financialService.submitProposal(1L))
+        assertThatThrownBy(() ->
+                financialService.submitProposal(1L))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("already submitted");
     }
@@ -133,6 +148,14 @@ class FinancialAnalysisServiceTest {
 
         assertThat(saved.getStatus()).isEqualTo(DecisionStatus.APPROVED);
         assertThat(sampleProposal.getStatus()).isEqualTo(ProposalStatus.APPROVED_BY_MANAGER);
+
+        verify(auditLogService).log(any(), eq("APPROVE"), eq("UnderwritingDecision"), any());
+
+        verify(notificationHelper).notify(
+                eq(sampleApplication.getAssignedAnalystId()),
+                contains("SANCTIONED"),
+                eq(NotificationCategory.APPLICATION)
+        );
     }
 
     @Test
@@ -140,7 +163,8 @@ class FinancialAnalysisServiceTest {
         sampleProposal.setStatus(ProposalStatus.DRAFT);
         when(proposalRepository.findById(1L)).thenReturn(Optional.of(sampleProposal));
 
-        assertThatThrownBy(() -> financialService.makeDecision(1L, new UnderwritingDecision()))
+        assertThatThrownBy(() ->
+                financialService.makeDecision(1L, new UnderwritingDecision()))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("SUBMITTED");
     }

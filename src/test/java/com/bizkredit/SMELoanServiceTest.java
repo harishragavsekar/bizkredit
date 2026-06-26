@@ -5,6 +5,8 @@ import com.bizkredit.enums.*;
 import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.exception.ResourceNotFoundException;
 import com.bizkredit.repository.*;
+import com.bizkredit.service.AuditLogService;
+import com.bizkredit.service.NotificationHelper;
 import com.bizkredit.service.SMELoanService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -29,6 +30,10 @@ class SMELoanServiceTest {
     @Mock private GroupCompanyRepository groupCompanyRepository;
     @Mock private LoanApplicationRepository loanApplicationRepository;
     @Mock private ApplicationDocumentRepository documentRepository;
+
+    // ✅ FIX: missing dependencies
+    @Mock private AuditLogService auditLogService;
+    @Mock private NotificationHelper notificationHelper;
 
     @InjectMocks
     private SMELoanService smeService;
@@ -53,6 +58,7 @@ class SMELoanServiceTest {
                 .requestedAmount(new BigDecimal("1000000"))
                 .tenure(36)
                 .status(ApplicationStatus.SUBMITTED)
+                .assignedAnalystId(10L) // needed for notification flows
                 .build();
     }
 
@@ -64,7 +70,9 @@ class SMELoanServiceTest {
         SMEBusiness result = smeService.registerBusiness(sampleBusiness);
 
         assertThat(result.getBusinessName()).isEqualTo("Dileep Enterprises");
+
         verify(businessRepository).save(any());
+        verify(auditLogService).log(any(), eq("CREATE"), eq("SMEBusiness"), any());
     }
 
     @Test
@@ -92,11 +100,14 @@ class SMELoanServiceTest {
         LoanApplication result = smeService.submitApplication(1L, sampleApplication);
 
         assertThat(result.getStatus()).isEqualTo(ApplicationStatus.SUBMITTED);
+
+        verify(auditLogService).log(any(), eq("CREATE"), eq("LoanApplication"), any());
     }
 
     @Test
     void linkGroupCompany_sameId_throwsBadRequest() {
-        assertThatThrownBy(() -> smeService.linkGroupCompany(1L, 1L, "Subsidiary"))
+        assertThatThrownBy(() ->
+                smeService.linkGroupCompany(1L, 1L, "Subsidiary"))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("cannot be the same");
     }
@@ -110,6 +121,8 @@ class SMELoanServiceTest {
 
         assertThat(result.getAssignedAnalystId()).isEqualTo(5L);
         assertThat(result.getStatus()).isEqualTo(ApplicationStatus.IN_REVIEW);
+
+        verify(auditLogService).log(any(), eq("UPDATE"), eq("LoanApplication"), any());
     }
 
     @Test
@@ -125,5 +138,7 @@ class SMELoanServiceTest {
         ApplicationDocument saved = smeService.uploadDocument(1L, doc);
 
         assertThat(saved.getApplication()).isEqualTo(sampleApplication);
+
+        verify(auditLogService).log(any(), eq("CREATE"), eq("ApplicationDocument"), any());
     }
 }

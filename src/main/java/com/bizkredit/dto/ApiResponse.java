@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// Generic API response wrapper - all endpoints return this for consistency
+// Generic API response wrapper - all endpoints return this
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,7 +16,7 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
-    // Success response with data
+    // Success response
     public static <T> ApiResponse<T> ok(String message, T data) {
         return ApiResponse.<T>builder()
                 .success(true)
@@ -25,7 +25,7 @@ public class ApiResponse<T> {
                 .build();
     }
 
-    // Error response without data
+    // Error response
     public static <T> ApiResponse<T> error(String message) {
         return ApiResponse.<T>builder()
                 .success(false)
