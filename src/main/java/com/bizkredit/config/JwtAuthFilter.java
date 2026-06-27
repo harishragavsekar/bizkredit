@@ -1,6 +1,6 @@
 package com.bizkredit.config;
 
-import com.bizkredit.service.CustomUserDetailsService;
+import com.bizkredit.module1.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

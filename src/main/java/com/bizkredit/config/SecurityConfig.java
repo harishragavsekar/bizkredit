@@ -1,6 +1,6 @@
 package com.bizkredit.config;
 
-import com.bizkredit.service.CustomUserDetailsService;
+import com.bizkredit.module1.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
