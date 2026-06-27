@@ -22,13 +22,15 @@ public class NPAController {
 
     private final NPAClassificationService npaService;
 
-    // POST /api/npa/classify — run classification engine
     @PostMapping("/classify")
     @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<Map<String, Integer>>> classify() {
         int count = npaService.runClassification();
-        return ResponseEntity.ok(ApiResponse.ok("Classification complete",
-                Map.of("newNPAClassified", count)));
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "Classification complete",
+                Map.of("newNPAClassified", count)
+        ));
     }
 
     @GetMapping
@@ -36,21 +38,19 @@ public class NPAController {
     public ResponseEntity<ApiResponse<List<NPARecord>>> getAllNPA(
             @RequestParam(required = false) NPAProvisioningCategory provisioningCategory,
             @RequestParam(required = false) NPARecordStatus status) {
-        return ResponseEntity.ok(ApiResponse.ok("NPA records fetched",
-                npaService.getAllNPA(provisioningCategory, status)));
+
+        return ResponseEntity.ok(ApiResponse.ok(
+                "NPA records fetched",
+                npaService.getAllNPA(provisioningCategory, status)
+        ));
     }
 
-    @GetMapping("/{facilityId}/history")
-    @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
-    public ResponseEntity<ApiResponse<List<NPARecord>>> getHistory(@PathVariable Long facilityId) {
-        return ResponseEntity.ok(ApiResponse.ok("NPA history fetched",
-                npaService.getHistoryByFacility(facilityId)));
-    }
-
-    @PutMapping("/{npaId}/upgrade")
+    @PostMapping("/{npaId}/upgrade")
     @PreAuthorize("hasAnyRole('CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<NPARecord>> upgrade(@PathVariable Long npaId) {
-        return ResponseEntity.ok(ApiResponse.ok("Facility upgraded from NPA",
-                npaService.upgradeNPA(npaId)));
+        return ResponseEntity.ok(ApiResponse.ok(
+                "Facility upgraded from NPA",
+                npaService.upgradeNPA(npaId)
+        ));
     }
 }

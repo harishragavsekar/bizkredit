@@ -39,25 +39,4 @@ public class PortfolioController {
         return ResponseEntity.ok(ApiResponse.ok("Sector-wise exposure",
                 portfolioService.getSectorExposure()));
     }
-
-    @GetMapping("/covenant-compliance")
-    @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> getCovenantCompliance() {
-        return ResponseEntity.ok(ApiResponse.ok("Covenant compliance summary",
-                portfolioService.getCovenantCompliance()));
-    }
-
-    @GetMapping("/ews-signals")
-    @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> getEWSSignals() {
-        return ResponseEntity.ok(ApiResponse.ok("EWS signal aggregation",
-                portfolioService.getEWSSignals()));
-    }
-
-    @GetMapping("/renewal-pipeline")
-    @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> getRenewalPipeline() {
-        return ResponseEntity.ok(ApiResponse.ok("Renewal pipeline",
-                portfolioService.getRenewalPipeline()));
-    }
 }
