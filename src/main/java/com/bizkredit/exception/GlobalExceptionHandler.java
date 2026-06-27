@@ -1,6 +1,6 @@
 package com.bizkredit.exception;
 
-import com.bizkredit.dto.ApiResponse;
+import com.bizkredit.module1.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
                 String detail = ex.getClass().getSimpleName()
                         + (ex.getMessage() != null ? ": " + ex.getMessage() : "");
                 yield ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("Internal server error — " + detail));
+                    .body(ApiResponse.error("Internal server error - " + detail));
             }
         };
     }

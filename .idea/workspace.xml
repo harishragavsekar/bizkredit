@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="dfa4cfa0-2969-4d8d-9a6e-89de55546811" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.factorypath" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/AuditLogController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/CollateralFacilityController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/CovenantNotificationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/FinancialAnalysisController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/LoanProductController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/MakerCheckerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/NPAController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/PortfolioController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/RepaymentController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/SMELoanController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/ScorecardController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/UserController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/controller/UserScopeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/dto/ApiResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/dto/AuthResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/dto/LoginRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/dto/MakerCheckerDTOs.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/dto/RegisterRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/dto/UserScopeDTOs.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/ApplicationDocument.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/AuditLog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/CollateralRecord.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/CollateralRevaluation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/Covenant.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/CovenantTracking.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/CreditProposal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/Drawdown.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/EarlyWarningSignal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/FacilityAccount.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/FinancialStatement.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/GroupCompany.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/LoanApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/LoanProduct.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/MakerCheckerRecord.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/NPARecord.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/Notification.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/Promoter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/Repayment.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/SMEBusiness.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/ScorecardModel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/UnderwritingDecision.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/entity/WorkingCapitalUtilisation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/AnalystRecommendation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/AnalystRecommendation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ApplicationStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ApplicationStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/AssetType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/AssetType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/CollateralStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/CollateralStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ComplianceStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ComplianceStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/CovenantStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/CovenantStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/CovenantType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/CovenantType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/DecisionStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/DecisionStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/DocumentType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/DocumentType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/DrawdownStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/DrawdownStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EWSSeverity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EWSSeverity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EWSSignalType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EWSSignalType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EWSStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EWSStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EntityType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/EntityType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/FacilityStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/FacilityStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/LoanProductStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/LoanProductStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/MakerCheckerAction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/MakerCheckerAction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/MakerCheckerStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/MakerCheckerStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/MonitoringFrequency.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/MonitoringFrequency.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NPAProvisioningCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NPAProvisioningCategory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NPARecordStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NPARecordStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NotificationCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NotificationCategory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NotificationStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/NotificationStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/PaymentMethod.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/PaymentMethod.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ProductType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ProductType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ProposalStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ProposalStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/RepaymentStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/RepaymentStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/RiskCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/RiskCategory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/Role.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/Role.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ScorecardStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/ScorecardStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/VerificationStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/enums/VerificationStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/BadRequestException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/BadRequestException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/ForbiddenException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/ForbiddenException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/ResourceNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/ResourceNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/UnauthorizedException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/bizkredit/exception/UnauthorizedException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/ApplicationDocumentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/AuditLogRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/CollateralRecordRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/CollateralRevaluationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/CovenantRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/CreditProposalRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/DrawdownRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/EarlyWarningSignalRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/FacilityAccountRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/FinancialStatementRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/GroupCompanyRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/LoanApplicationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/LoanProductRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/MakerCheckerRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/NPARecordRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/NotificationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/PromoterRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/RepaymentRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/SMEBusinessRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/ScorecardModelRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/UnderwritingDecisionRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/UserRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/repository/WorkingCapitalUtilisationRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/AuditLogService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/AuthService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/CollateralFacilityService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/CovenantNotificationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/CustomUserDetailsService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/FinancialAnalysisService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/LoanProductService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/MakerCheckerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/NPAClassificationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/NotificationHelper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/PortfolioService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/RepaymentService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/SMELoanService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/ScorecardEngine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/ScorecardService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/ScoringFieldResolver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/ScoringRule.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/UserScopeService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/bizkredit/service/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application-test.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/bizkredit/AuthServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/bizkredit/CollateralFacilityServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/bizkredit/FinancialAnalysisServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/bizkredit/SMELoanServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/bizkredit/ScorecardEngineTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/bizkredit/UserServiceTest.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "harishragavsekar"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/harishragavsekar/bizkredit.git",
+    "accountId": "cd487849-ebb6-4eba-9d67-b03fefa982af"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="3FjQMRptsrOY2zi7uFSBZaeWLxV" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "develop",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dfa4cfa0-2969-4d8d-9a6e-89de55546811" name="Changes" comment="" />
+      <created>1782585952384</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1782585952384</updated>
+    </task>
+    <servers />
+  </component>
+</project>
