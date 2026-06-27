@@ -36,22 +36,4 @@ public class AuthController {
         authService.logout(userId);
         return ResponseEntity.ok(ApiResponse.ok("Logged out successfully", null));
     }
-
-    // Step 1: request reset — returns 200 regardless of email existence.
-
-    @PostMapping("/forgot-password")
-    public ResponseEntity<ApiResponse<ForgotPasswordResponse>> forgotPassword(
-            @Valid @RequestBody ForgotPasswordRequest request) {
-        var devToken = authService.forgotPassword(request.email());
-        return ResponseEntity.ok(ApiResponse.ok(
-                "If that email is registered, a reset token has been generated",
-                new ForgotPasswordResponse(devToken.orElse(null))));
-    }
-
-    // Step 2: submit new password with token
-    @PostMapping("/reset-password")
-    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        authService.resetPassword(request.token(), request.newPassword());
-        return ResponseEntity.ok(ApiResponse.ok("Password reset successfully", null));
-    }
 }

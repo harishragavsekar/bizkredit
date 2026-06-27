@@ -17,12 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
-
 // Configures Spring Security, JWT filter, authentication provider, CORS, and API access rules
 @Configuration
 @EnableWebSecurity
@@ -38,8 +32,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Apply Cross Origin Resource Sharing configuration
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
                 // Disable CSRF (cross site req forgery) because JWT is used instead of server-side sessions
                 .csrf(AbstractHttpConfigurer::disable)
@@ -71,22 +63,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Defines CORS settings for frontend-backend communication
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration config = new CorsConfiguration();
-
-        config.setAllowedOriginPatterns(List.of("*"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);
-
-        // Apply CORS configuration to all API paths
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        return source;
-    }
 
     // Defines how login authentication should load user and verify password
     @Bean

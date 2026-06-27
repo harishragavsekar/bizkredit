@@ -3,7 +3,6 @@ package com.bizkredit;
 import com.bizkredit.config.JwtUtil;
 import com.bizkredit.dto.LoginRequest;
 import com.bizkredit.dto.RegisterRequest;
-import com.bizkredit.entity.PasswordResetToken;
 import com.bizkredit.entity.User;
 import com.bizkredit.enums.Role;
 import com.bizkredit.exception.BadRequestException;

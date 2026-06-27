@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @Tag(name = "Module 4: Facility, Disbursement & Repayment")
 @RestController
@@ -22,23 +21,16 @@ public class RepaymentController {
 
     private final RepaymentService repaymentService;
 
-    // RECORD REPAYMENT
     @PostMapping
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<Object>> recordRepayment(
+    public ResponseEntity<ApiResponse<Repayment>> recordRepayment(
             @Valid @RequestBody Repayment repayment) {
-
-        Repayment saved = repaymentService.recordRepayment(repayment);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("Repayment recorded",
-                        Map.of(
-                                "repaymentId", saved.getRepaymentId(),
-                                "status", saved.getStatus()
-                        )));
+                        repaymentService.recordRepayment(repayment)));
     }
 
-    // GET REPAYMENTS
     @GetMapping
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','CREDIT_ANALYST','ADMIN')")
     public ResponseEntity<ApiResponse<?>> getRepayments(
@@ -46,67 +38,34 @@ public class RepaymentController {
             @RequestParam(required = false) Long drawdownId) {
 
         if (drawdownId != null) {
-            List<Repayment> list = repaymentService.getByDrawdown(drawdownId);
-            return ResponseEntity.ok(ApiResponse.ok("Repayments fetched", list));
+            List<Repayment> repayments = repaymentService.getByDrawdown(drawdownId);
+            return ResponseEntity.ok(ApiResponse.ok("Repayments fetched", repayments));
         }
 
         if (facilityId != null) {
-            List<Repayment> list = repaymentService.getByFacility(facilityId);
-            return ResponseEntity.ok(ApiResponse.ok("Repayments fetched", list));
+            List<Repayment> repayments = repaymentService.getByFacility(facilityId);
+            return ResponseEntity.ok(ApiResponse.ok("Repayments fetched", repayments));
         }
 
         return ResponseEntity.badRequest()
                 .body(ApiResponse.error("Provide facilityId or drawdownId"));
     }
 
-    //  GET BY ID
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','CREDIT_ANALYST','ADMIN')")
-    public ResponseEntity<ApiResponse<Object>> getById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Repayment>> getById(@PathVariable Long id) {
 
-        Repayment repayment = repaymentService.getById(id);
-
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Repayment fetched",
-                Map.of(
-                        "repaymentId", repayment.getRepaymentId(),
-                        "amount", repayment.getAmount(),
-                        "status", repayment.getStatus()
-                )
-        ));
+        return ResponseEntity.ok(ApiResponse.ok("Repayment fetched",
+                repaymentService.getById(id)));
     }
 
-    //  VERIFY REPAYMENT (FINAL FIX HERE)
-    @PutMapping("/{id}/verify")
+    @PostMapping("/{id}/verify")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
-    public ResponseEntity<ApiResponse<Object>> verify(
+    public ResponseEntity<ApiResponse<Repayment>> verify(
             @PathVariable Long id,
             @RequestParam Long verifiedById) {
 
-        Repayment repayment = repaymentService.verifyRepayment(id, verifiedById);
-
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Repayment verified",
-                Map.of(
-                        "repaymentId", repayment.getRepaymentId(),
-                        "status", repayment.getStatus()
-                )
-        ));
-    }
-
-    //  REVERSE REPAYMENT
-    @PutMapping("/{id}/reverse")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Object>> reverse(@PathVariable Long id) {
-
-        Repayment repayment = repaymentService.reverseRepayment(id);
-
-        return ResponseEntity.ok(ApiResponse.ok(
-                "Repayment reversed",
-                Map.of(
-                        "repaymentId", repayment.getRepaymentId(),
-                        "status", repayment.getStatus()
-                )
-        ));
+        return ResponseEntity.ok(ApiResponse.ok("Repayment verified",
+                repaymentService.verifyRepayment(id, verifiedById)));
     }
 }

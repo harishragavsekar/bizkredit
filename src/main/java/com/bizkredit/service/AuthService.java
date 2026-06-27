@@ -5,12 +5,10 @@ import com.bizkredit.dto.AuthResponse;
 import com.bizkredit.dto.LoginRequest;
 import com.bizkredit.dto.RegisterRequest;
 import com.bizkredit.entity.AuditLog;
-import com.bizkredit.entity.PasswordResetToken;
 import com.bizkredit.entity.User;
 import com.bizkredit.exception.BadRequestException;
 import com.bizkredit.exception.ForbiddenException;
 import com.bizkredit.repository.AuditLogRepository;
-import com.bizkredit.repository.PasswordResetTokenRepository;
 import com.bizkredit.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +35,6 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final AuditLogRepository auditLogRepository;
-    private final PasswordResetTokenRepository resetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
@@ -169,93 +166,5 @@ public class AuthService {
                 .build());
         log.info("User logged out: {}", userId);
     }
-
-    // Creates password reset token if email exists
-    @Transactional
-    public Optional<String> forgotPassword(String email) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
-            return Optional.empty();
-        }
-        User user = userOpt.get();
-
-        // Remove previous unused reset tokens for the user
-        resetTokenRepository.deleteByUserId(user.getUserId());
-
-        // Generate and save new single-use reset token
-        String token = UUID.randomUUID().toString();
-        resetTokenRepository.save(PasswordResetToken.builder()
-                .token(token)
-                .userId(user.getUserId())
-                .expiresAt(LocalDateTime.now().plusMinutes(15))
-                .used(false)
-                .build());
-
-        log.info("Password reset token generated for user {}: {} (expires in 15 min)",
-                user.getEmail(), token);
-
-        // Save password reset request audit record
-        auditLogRepository.save(AuditLog.builder()
-                .userId(user.getUserId())
-                .action("PASSWORD_RESET_REQUESTED")
-                .entityType("User")
-                .recordId(String.valueOf(user.getUserId()))
-                .build());
-
-        // Return token only when enabled for dev/test
-        return exposeResetTokenInResponse ? Optional.of(token) : Optional.empty();
-    }
-
-    // Validates reset token and updates user password
-    @Transactional
-    public void resetPassword(String token, String newPassword) {
-        PasswordResetToken resetToken = resetTokenRepository.findByToken(token)
-                .orElseThrow(() -> new BadRequestException("Invalid or expired reset token"));
-
-        // Reject already used token
-        if (resetToken.isUsed()) {
-            throw new BadRequestException("Reset token has already been used");
-        }
-
-        // Reject expired token
-        if (resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("Reset token has expired");
-        }
-
-        // Validate new password against password policy
-        if (!PASSWORD_POLICY.matcher(newPassword).matches()) {
-            throw new BadRequestException(
-                    "Password must be at least 8 characters with uppercase, lowercase, digit, and special character");
-        }
-
-        // Fetch user linked with reset token
-        User user = userRepository.findById(resetToken.getUserId())
-                .orElseThrow(() -> new BadRequestException("User not found"));
-
-        // Encode and update new password
-        user.setPassword(passwordEncoder.encode(newPassword));
-
-        // Unlock account after successful password reset
-        if ("Locked".equals(user.getStatus())) {
-            user.setStatus("Active");
-            user.setFailedLoginAttempts(0);
-        }
-        userRepository.save(user);
-
-        // Mark reset token as used
-        resetToken.setUsed(true);
-        resetTokenRepository.save(resetToken);
-
-        // Save password reset audit record
-        auditLogRepository.save(AuditLog.builder()
-                .userId(user.getUserId())
-                .action("PASSWORD_RESET")
-                .entityType("User")
-                .recordId(String.valueOf(user.getUserId()))
-                .build());
-
-        log.info("Password reset successfully for user {}", user.getEmail());
-    }
-
 
 }
