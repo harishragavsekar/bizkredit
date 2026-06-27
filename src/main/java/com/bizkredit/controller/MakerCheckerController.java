@@ -23,7 +23,6 @@ public class MakerCheckerController {
 
     private final MakerCheckerService service;
 
-    // CREATE REQUEST
     @PostMapping
     @PreAuthorize("hasAnyRole('CREDIT_ANALYST', 'RELATIONSHIP_MANAGER', 'COLLATERAL_EVALUATOR')")
     public ResponseEntity<ApiResponse<MakerCheckerRecord>> submit(
@@ -33,7 +32,6 @@ public class MakerCheckerController {
                 .body(ApiResponse.ok("Submitted for approval", service.submit(request)));
     }
 
-    // GET PENDING REQUESTS
     @GetMapping("/pending/{role}")
     @PreAuthorize("hasAnyRole('UNDERWRITING_MANAGER', 'RELATIONSHIP_MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponse<List<MakerCheckerRecord>>> getPendingForRole(
@@ -43,8 +41,7 @@ public class MakerCheckerController {
                 service.getPendingForRole(role)));
     }
 
-    // APPROVE REQUEST
-    @PostMapping("/{id}/approve")
+    @PatchMapping("/{id}/approve")
     @PreAuthorize("hasAnyRole('UNDERWRITING_MANAGER', 'RELATIONSHIP_MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponse<MakerCheckerRecord>> approve(
             @PathVariable Long id,
@@ -56,8 +53,7 @@ public class MakerCheckerController {
                 service.approve(id, comments)));
     }
 
-    // REJECT REQUEST
-    @PostMapping("/{id}/reject")
+    @PatchMapping("/{id}/reject")
     @PreAuthorize("hasAnyRole('UNDERWRITING_MANAGER', 'RELATIONSHIP_MANAGER', 'ADMIN')")
     public ResponseEntity<ApiResponse<MakerCheckerRecord>> reject(
             @PathVariable Long id,
