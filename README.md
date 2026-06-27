@@ -1,189 +1,117 @@
-# BizKredit — SME Business Loan & Working Capital Platform
+# BizKredit
 
-A Spring Boot REST API backend for managing SME business loans, from onboarding and credit underwriting through facility disbursement, collateral management, covenant monitoring, and notifications.
+BizKredit is a Spring Boot REST API application for managing SME business loans and working capital facilities.
 
-Built as part of the Cognizant GenC IDE Java FSE (React) Stage 2 Plus program.
+The application supports key loan management activities such as user authentication, SME business onboarding, loan application processing, credit analysis, collateral management, facility disbursement, covenant monitoring, and notifications.
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Language | Java 21 |
-| Framework | Spring Boot 3.2.5 |
-| Persistence | Spring Data JPA, Hibernate 6.4.4 |
-| Database | MySQL 8 |
-| Security | Spring Security, JWT (JJWT 0.12.3) |
-| Boilerplate | Lombok |
-| Logging | SLF4J |
-| Testing | JUnit 5, Mockito, AssertJ |
-| API Docs | SpringDoc OpenAPI / Swagger UI 2.5.0 |
-| Build | Maven |
+- Java 21
+- Spring Boot 3.2.5
+- Spring Data JPA
+- Hibernate
+- MySQL 8
+- Spring Security
+- JWT
+- Maven
+- Lombok
+- JUnit 5
+- Mockito
+- Swagger / OpenAPI
+
+---
+
+## Features
+
+- User registration and login
+- JWT-based authentication
+- SME business profile management
+- Loan application management
+- Financial and credit analysis
+- Collateral management
+- Facility and drawdown management
+- Covenant monitoring
+- Notifications and alerts
+- Swagger API documentation
+- Unit testing
 
 ---
 
 ## Architecture
 
-The application follows a standard layered architecture:
+The project follows a layered architecture:
 
-```
-Controller  ->  Service  ->  Repository  ->  Database
-   (REST)     (business)     (Spring Data)    (MySQL)
-```
+Controller -> Service -> Repository -> Database
 
-- **Controller layer** — exposes REST endpoints, validates input with `@Valid`
-- **Service layer** — business logic, `@Transactional` boundaries
-- **Repository layer** — Spring Data JPA interfaces
-- **Entity layer** — JPA-mapped domain objects
-- **DTO layer** — request/response records for auth
-- **Security layer** — JWT filter, Spring Security configuration
-- **Exception layer** — centralised handling via `@RestControllerAdvice`
+- Controller handles REST API requests
+- Service contains business logic
+- Repository communicates with the database
+- Entity represents database tables
+- DTO handles request and response data
+- Security handles authentication and authorization
+- Exception layer handles errors globally
 
 ---
 
-## Modules
+## Prerequisites
 
-| Module | Area | Owner |
-|--------|------|-------|
-| 4.1 | Identity & Access Management + JWT Security | Harish (Lead) |
-| 4.2 | SME Business Profile | Dileep |
-| 4.3 | Loan Application | Dileep |
-| 4.4 | Financial Analysis & Credit Underwriting | Subhishka |
-| 4.5 | Collateral Management | Affrina |
-| 4.6 | Facility Disbursement | Affrina |
-| 4.7 | Covenant & Portfolio Monitoring | Harshat |
-| 4.8 | Notifications & Alerts | Harshat |
-
----
-
-## Security
-
-All endpoints except authentication and Swagger require a valid JWT.
-
-- `POST /api/auth/register` — register a user, returns a JWT
-- `POST /api/auth/login` — authenticate, returns a JWT
-
-Pass the token on subsequent requests:
-
-```
-Authorization: Bearer <token>
-```
-
-Passwords are hashed with BCrypt and never returned in API responses. Sessions are stateless.
-
----
-
-## Getting Started
-
-### Prerequisites
+Before running the project, make sure the following are installed:
 
 - JDK 21
-- MySQL 8 running on `localhost:3306`
-- Maven 3.9+
+- MySQL 8
+- Maven
 
-### Configuration
+---
 
-Update `src/main/resources/application.properties` with your MySQL credentials:
+## Database Configuration
 
-```properties
+Update the database details in:
+
+src/main/resources/application.properties
+
+Example:
+
 spring.datasource.url=jdbc:mysql://localhost:3306/bizkredit_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
 spring.datasource.username=root
 spring.datasource.password=your_password
 server.port=8081
-```
 
-The database `bizkredit_db` is created automatically on first run.
+---
 
-### Build & Run
+## How to Run
 
-```bash
-# Build and run tests
+Build the project:
+
 mvn clean install
 
-# Run the application
+Run the application:
+
 mvn spring-boot:run
-```
 
-The application starts on `http://localhost:8081`.
+The application will start at:
 
-### API Documentation
+http://localhost:8081
 
-Once running, Swagger UI is available at:
+---
 
-```
+## Swagger Documentation
+
+After starting the application, Swagger UI can be accessed at:
+
 http://localhost:8081/swagger-ui.html
-```
-
-Click **Authorize**, paste your JWT, and test any protected endpoint.
 
 ---
 
 ## Testing
 
-Unit tests cover the service layer using JUnit 5 and Mockito, with AssertJ assertions.
+Run the test cases using:
 
-```bash
 mvn test
-```
-
-Tests follow the Arrange-Act-Assert pattern and mock all repository dependencies so they run without a database.
 
 ---
 
-## API Overview
+## Summary
 
-| Area | Base Path |
-|------|-----------|
-| Authentication | `/api/auth` |
-| Users | `/api/users` |
-| SME Businesses | `/api/businesses` |
-| Loan Applications | `/api/applications` |
-| Financial Analysis | `/api/financial` |
-| Collateral | `/api/collateral` |
-| Facilities & Drawdowns | `/api/facilities`, `/api/drawdowns` |
-| Covenants & Monitoring | `/api/covenants` |
-| Notifications | `/api/notifications` |
-
-Full request/response schemas are documented in Swagger UI.
-
----
-
-## Project Structure
-
-```
-src/main/java/com/bizkredit/
-├── config/        Security, JWT, OpenAPI configuration
-├── controller/    REST controllers
-├── dto/           Request/response records
-├── entity/        JPA entities
-├── enums/         Domain enumerations
-├── exception/     Global exception handling
-├── repository/    Spring Data JPA repositories
-└── service/       Business logic
-
-src/test/java/com/bizkredit/
-└── *ServiceTest   Unit tests for each service
-```
-
----
-
-## Branch Strategy
-
-- `main` — stable releases
-- `develop` — integration branch
-- `feature/*` — per-module feature branches
-
-Feature branches merge into `develop` via pull requests; `develop` merges into `main` at milestones.
-
----
-
-## Team
-
-| Member | Modules |
-|--------|---------|
-| Harish (Lead) | IAM, JWT Security |
-| Dileep | SME Business, Loan Application |
-| Subhishka | Financial Analysis & Underwriting |
-| Affrina | Collateral, Facility Disbursement |
-| Harshat | Covenant Monitoring, Notifications |
+BizKredit is a backend REST API application built using Spring Boot 3.2.5 for managing SME loan operations in a secure and structured way.

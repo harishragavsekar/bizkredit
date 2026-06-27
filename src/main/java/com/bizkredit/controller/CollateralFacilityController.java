@@ -124,7 +124,7 @@ public class CollateralFacilityController {
                 service.getDrawdownById(id)));
     }
 
-    @PostMapping("/api/facilities/{facilityId}/drawdowns/{id}/disburse")
+    @PatchMapping("/api/facilities/{facilityId}/drawdowns/{id}/disburse")
     @PreAuthorize("hasAnyRole('RELATIONSHIP_MANAGER','ADMIN')")
     public ResponseEntity<ApiResponse<Drawdown>> disburseDrawdown(
             @PathVariable Long facilityId,
