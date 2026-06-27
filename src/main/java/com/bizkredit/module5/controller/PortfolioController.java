@@ -1,6 +1,6 @@
 package com.bizkredit.module5.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module5.service.PortfolioService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

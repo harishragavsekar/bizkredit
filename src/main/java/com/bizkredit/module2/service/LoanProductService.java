@@ -1,9 +1,10 @@
 package com.bizkredit.module2.service;
 
 import com.bizkredit.module2.entity.LoanProduct;
-import com.bizkredit.enums.LoanProductStatus;
-import com.bizkredit.exception.BadRequestException;
-import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.common.enums.LoanProductStatus;
+import com.bizkredit.module1.service.AuditLogService;
+import com.bizkredit.common.exception.BadRequestException;
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import com.bizkredit.module2.repository.LoanProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,9 @@
 package com.bizkredit.module5.entity;
 
-import com.bizkredit.enums.CovenantStatus;
-import com.bizkredit.enums.CovenantType;
-import com.bizkredit.enums.MonitoringFrequency;
+import com.bizkredit.module4.entity.FacilityAccount;
+import com.bizkredit.common.enums.CovenantStatus;
+import com.bizkredit.common.enums.CovenantType;
+import com.bizkredit.common.enums.MonitoringFrequency;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

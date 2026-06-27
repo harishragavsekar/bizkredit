@@ -1,8 +1,9 @@
 package com.bizkredit.module1.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
-import com.bizkredit.dto.UserScopeDTOs.UserScopeRequest;
-import com.bizkredit.dto.UserScopeDTOs.UserScopeResponse;
+import com.bizkredit.common.dto.ApiResponse;
+import com.bizkredit.module1.dto.UserScopeDTOs.UserScopeRequest;
+import com.bizkredit.module1.dto.UserScopeDTOs.UserScopeResponse;
+
 import com.bizkredit.module1.entity.User;
 import com.bizkredit.module1.service.UserScopeService;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -5,7 +5,7 @@ import com.bizkredit.module4.entity.CollateralRecord;
 import com.bizkredit.module4.entity.CollateralRevaluation;
 import com.bizkredit.module4.entity.Drawdown;
 import com.bizkredit.module4.entity.WorkingCapitalUtilisation;
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module4.service.CollateralFacilityService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

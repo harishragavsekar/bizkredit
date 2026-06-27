@@ -1,8 +1,8 @@
 package com.bizkredit.module5.repository;
 
 import com.bizkredit.module5.entity.NPARecord;
-import com.bizkredit.enums.NPAProvisioningCategory;
-import com.bizkredit.enums.NPARecordStatus;
+import com.bizkredit.common.enums.NPAProvisioningCategory;
+import com.bizkredit.common.enums.NPARecordStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

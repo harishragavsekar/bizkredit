@@ -1,6 +1,6 @@
 package com.bizkredit.module4.dto;
 
-import com.bizkredit.enums.MakerCheckerAction;
+import com.bizkredit.common.enums.MakerCheckerAction;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

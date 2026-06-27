@@ -1,5 +1,6 @@
 package com.bizkredit.module2.entity;
 
+import com.bizkredit.module2.entity.SMEBusiness;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

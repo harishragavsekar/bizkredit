@@ -1,6 +1,6 @@
 package com.bizkredit.module1.entity;
 
-import com.bizkredit.enums.Role;
+import com.bizkredit.common.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;

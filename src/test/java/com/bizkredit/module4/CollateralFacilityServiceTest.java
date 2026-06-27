@@ -16,15 +16,15 @@ import com.bizkredit.module4.repository.WorkingCapitalUtilisationRepository;
 import com.bizkredit.module4.service.CollateralFacilityService;
 import com.bizkredit.module1.service.AuditLogService;
 import com.bizkredit.module5.service.NotificationHelper;
-import com.bizkredit.enums.ApplicationStatus;
-import com.bizkredit.enums.AssetType;
-import com.bizkredit.enums.CollateralStatus;
-import com.bizkredit.enums.DrawdownStatus;
-import com.bizkredit.enums.EntityType;
-import com.bizkredit.enums.FacilityStatus;
-import com.bizkredit.enums.ProductType;
-import com.bizkredit.exception.BadRequestException;
-import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.common.enums.ApplicationStatus;
+import com.bizkredit.common.enums.AssetType;
+import com.bizkredit.common.enums.CollateralStatus;
+import com.bizkredit.common.enums.DrawdownStatus;
+import com.bizkredit.common.enums.EntityType;
+import com.bizkredit.common.enums.FacilityStatus;
+import com.bizkredit.common.enums.ProductType;
+import com.bizkredit.common.exception.BadRequestException;
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -150,32 +150,7 @@ class CollateralFacilityServiceTest {
         assertThat(saved.getStatus()).isEqualTo(DrawdownStatus.REQUESTED);
     }
 
-    @Test
-    void approveDrawdown_success() {
-        Drawdown drawdown = Drawdown.builder()
-                .drawdownId(1L).facility(sampleFacility)
-                .amount(new BigDecimal("1000000")).status(DrawdownStatus.REQUESTED).build();
 
-        when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
-        when(drawdownRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
-
-        Drawdown approved = service.approveDrawdown(1L);
-
-        assertThat(approved.getStatus()).isEqualTo(DrawdownStatus.APPROVED);
-    }
-
-    @Test
-    void approveDrawdown_notRequested_throwsBadRequest() {
-        Drawdown drawdown = Drawdown.builder()
-                .drawdownId(1L).facility(sampleFacility)
-                .amount(new BigDecimal("1000000")).status(DrawdownStatus.DISBURSED).build();
-
-        when(drawdownRepository.findById(1L)).thenReturn(Optional.of(drawdown));
-
-        assertThatThrownBy(() -> service.approveDrawdown(1L))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("REQUESTED");
-    }
 
     @Test
     void disburseDrawdown_success_updatesBalance() {

@@ -1,7 +1,7 @@
 package com.bizkredit.module4.entity;
 
-import com.bizkredit.enums.MakerCheckerAction;
-import com.bizkredit.enums.MakerCheckerStatus;
+import com.bizkredit.common.enums.MakerCheckerAction;
+import com.bizkredit.common.enums.MakerCheckerStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,7 +1,6 @@
 package com.bizkredit.module2.repository;
 
 import com.bizkredit.module2.entity.ApplicationDocument;
-import com.bizkredit.enums.DocumentType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

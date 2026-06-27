@@ -1,7 +1,8 @@
 package com.bizkredit.module4.entity;
 
-import com.bizkredit.enums.AssetType;
-import com.bizkredit.enums.CollateralStatus;
+import com.bizkredit.module2.entity.LoanApplication;
+import com.bizkredit.common.enums.AssetType;
+import com.bizkredit.common.enums.CollateralStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

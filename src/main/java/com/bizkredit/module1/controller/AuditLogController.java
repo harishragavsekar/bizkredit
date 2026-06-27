@@ -1,6 +1,6 @@
 package com.bizkredit.module1.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module1.entity.AuditLog;
 import com.bizkredit.module1.service.AuditLogService;
 import io.swagger.v3.oas.annotations.tags.Tag;

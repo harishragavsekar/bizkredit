@@ -1,8 +1,8 @@
 package com.bizkredit.module5.service;
 
 import com.bizkredit.module5.entity.Notification;
-import com.bizkredit.enums.NotificationCategory;
-import com.bizkredit.enums.NotificationStatus;
+import com.bizkredit.common.enums.NotificationCategory;
+import com.bizkredit.common.enums.NotificationStatus;
 import com.bizkredit.module5.repository.NotificationRepository;
 import com.bizkredit.module1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

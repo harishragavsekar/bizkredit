@@ -1,5 +1,8 @@
 package com.bizkredit.module3.service;
 
+import com.bizkredit.common.enums.ApplicationStatus;
+import com.bizkredit.common.enums.NotificationCategory;
+import com.bizkredit.common.enums.ProposalStatus;
 import com.bizkredit.module1.service.AuditLogService;
 import com.bizkredit.module5.service.NotificationHelper;
 import com.bizkredit.module2.entity.LoanApplication;
@@ -10,10 +13,8 @@ import com.bizkredit.module2.repository.LoanApplicationRepository;
 import com.bizkredit.module3.repository.FinancialStatementRepository;
 import com.bizkredit.module3.repository.CreditProposalRepository;
 import com.bizkredit.module3.repository.UnderwritingDecisionRepository;
-import com.bizkredit.module3.service.ScorecardService;
-import com.bizkredit.enums.*;
-import com.bizkredit.exception.BadRequestException;
-import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.common.exception.BadRequestException;
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

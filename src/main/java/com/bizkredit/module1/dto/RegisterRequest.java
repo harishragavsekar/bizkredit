@@ -1,6 +1,6 @@
 package com.bizkredit.module1.dto;
 
-import com.bizkredit.enums.Role;
+import com.bizkredit.common.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

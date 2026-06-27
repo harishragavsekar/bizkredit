@@ -1,9 +1,9 @@
 package com.bizkredit.module1.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module1.entity.AuditLog;
 import com.bizkredit.module1.entity.User;
-import com.bizkredit.enums.Role;
+import com.bizkredit.common.enums.Role;
 import com.bizkredit.module1.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

@@ -1,9 +1,9 @@
 package com.bizkredit.module3.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module3.entity.ScorecardModel;
-import com.bizkredit.enums.ProductType;
-import com.bizkredit.enums.ScorecardStatus;
+import com.bizkredit.common.enums.ProductType;
+import com.bizkredit.common.enums.ScorecardStatus;
 import com.bizkredit.module3.service.ScorecardService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

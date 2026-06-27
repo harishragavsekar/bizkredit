@@ -1,6 +1,6 @@
 package com.bizkredit.module4.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module4.entity.Repayment;
 import com.bizkredit.module4.service.RepaymentService;
 import io.swagger.v3.oas.annotations.tags.Tag;

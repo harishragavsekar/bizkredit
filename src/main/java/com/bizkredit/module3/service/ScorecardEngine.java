@@ -1,5 +1,6 @@
 package com.bizkredit.module3.service;
 
+import com.bizkredit.common.enums.RiskCategory;
 import com.bizkredit.module3.entity.ScorecardModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -256,7 +257,7 @@ public class ScorecardEngine {
             int computedScore,
             int maxScore,
             String rating,
-            com.bizkredit.enums.RiskCategory riskCategory,
+            RiskCategory riskCategory,
             List<ParameterResult> breakdown,
             boolean partialData,
             BigDecimal totalWeightApplied

@@ -1,5 +1,6 @@
 package com.bizkredit.module4.entity;
 
+import com.bizkredit.module4.entity.FacilityAccount;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;

@@ -2,7 +2,7 @@
 package com.bizkredit.module1.repository;
 
 import com.bizkredit.module1.entity.User;
-import com.bizkredit.enums.Role;
+import com.bizkredit.common.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

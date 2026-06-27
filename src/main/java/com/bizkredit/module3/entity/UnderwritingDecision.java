@@ -1,6 +1,6 @@
 package com.bizkredit.module3.entity;
 
-import com.bizkredit.enums.DecisionStatus;
+import com.bizkredit.common.enums.DecisionStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,7 +1,7 @@
 package com.bizkredit.module4.repository;
 
 import com.bizkredit.module4.entity.MakerCheckerRecord;
-import com.bizkredit.enums.MakerCheckerStatus;
+import com.bizkredit.common.enums.MakerCheckerStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,9 @@
 package com.bizkredit.module3.entity;
 
-import com.bizkredit.enums.AnalystRecommendation;
-import com.bizkredit.enums.ProposalStatus;
-import com.bizkredit.enums.RiskCategory;
+import com.bizkredit.module2.entity.LoanApplication;
+import com.bizkredit.common.enums.AnalystRecommendation;
+import com.bizkredit.common.enums.ProposalStatus;
+import com.bizkredit.common.enums.RiskCategory;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;

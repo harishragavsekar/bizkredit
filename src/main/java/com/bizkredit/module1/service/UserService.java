@@ -2,9 +2,9 @@ package com.bizkredit.module1.service;
 
 import com.bizkredit.module1.entity.AuditLog;
 import com.bizkredit.module1.entity.User;
-import com.bizkredit.enums.Role;
-import com.bizkredit.exception.BadRequestException;
-import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.common.enums.Role;
+import com.bizkredit.common.exception.BadRequestException;
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import com.bizkredit.module1.repository.AuditLogRepository;
 import com.bizkredit.module1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

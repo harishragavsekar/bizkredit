@@ -1,9 +1,9 @@
 package com.bizkredit.module4.service;
 
-import com.bizkredit.dto.MakerCheckerDTOs.MakerCheckerRequest;
+import com.bizkredit.module4.dto.MakerCheckerDTOs.MakerCheckerRequest;
 import com.bizkredit.module4.entity.MakerCheckerRecord;
-import com.bizkredit.enums.MakerCheckerStatus;
-import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.common.enums.MakerCheckerStatus;
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import com.bizkredit.module4.repository.MakerCheckerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

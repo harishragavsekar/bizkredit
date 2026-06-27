@@ -1,10 +1,12 @@
 package com.bizkredit.module4.entity;
 
+import com.bizkredit.module2.entity.SMEBusiness;
+import com.bizkredit.module2.entity.LoanApplication;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.bizkredit.enums.FacilityStatus;
-import com.bizkredit.enums.ProductType;
+import com.bizkredit.common.enums.FacilityStatus;
+import com.bizkredit.common.enums.ProductType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

@@ -1,8 +1,8 @@
 package com.bizkredit.module3.entity;
 
-import com.bizkredit.enums.ProductType;
-import com.bizkredit.enums.RiskCategory;
-import com.bizkredit.enums.ScorecardStatus;
+import com.bizkredit.common.enums.ProductType;
+import com.bizkredit.common.enums.RiskCategory;
+import com.bizkredit.common.enums.ScorecardStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;

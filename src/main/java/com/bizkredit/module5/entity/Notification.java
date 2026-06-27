@@ -1,7 +1,8 @@
 package com.bizkredit.module5.entity;
 
-import com.bizkredit.enums.NotificationCategory;
-import com.bizkredit.enums.NotificationStatus;
+import com.bizkredit.module1.entity.User;
+import com.bizkredit.common.enums.NotificationCategory;
+import com.bizkredit.common.enums.NotificationStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;

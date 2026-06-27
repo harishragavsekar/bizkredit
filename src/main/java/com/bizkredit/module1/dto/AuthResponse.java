@@ -1,6 +1,6 @@
 package com.bizkredit.module1.dto;
 
-import com.bizkredit.enums.Role;
+import com.bizkredit.common.enums.Role;
 
 
 public record AuthResponse(

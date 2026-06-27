@@ -1,7 +1,7 @@
 package com.bizkredit.module4.repository;
 
 import com.bizkredit.module4.entity.CollateralRecord;
-import com.bizkredit.enums.CollateralStatus;
+import com.bizkredit.common.enums.CollateralStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

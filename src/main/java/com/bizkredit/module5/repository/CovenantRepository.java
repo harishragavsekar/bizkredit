@@ -1,7 +1,7 @@
 package com.bizkredit.module5.repository;
 
 import com.bizkredit.module5.entity.Covenant;
-import com.bizkredit.enums.CovenantStatus;
+import com.bizkredit.common.enums.CovenantStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

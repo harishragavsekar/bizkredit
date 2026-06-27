@@ -1,15 +1,14 @@
 package com.bizkredit.module5.service;
 
+import com.bizkredit.common.enums.*;
 import com.bizkredit.module4.entity.FacilityAccount;
-import com.bizkredit.module4.entity.Drawdown;
 import com.bizkredit.module4.repository.FacilityAccountRepository;
 import com.bizkredit.module4.repository.DrawdownRepository;
 import com.bizkredit.module5.entity.EarlyWarningSignal;
 import com.bizkredit.module5.entity.NPARecord;
 import com.bizkredit.module5.repository.EarlyWarningSignalRepository;
 import com.bizkredit.module5.repository.NPARecordRepository;
-import com.bizkredit.enums.*;
-import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,8 @@
 package com.bizkredit.module5.entity;
 
-import com.bizkredit.enums.NPAProvisioningCategory;
-import com.bizkredit.enums.NPARecordStatus;
+import com.bizkredit.module4.entity.FacilityAccount;
+import com.bizkredit.common.enums.NPAProvisioningCategory;
+import com.bizkredit.common.enums.NPARecordStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;

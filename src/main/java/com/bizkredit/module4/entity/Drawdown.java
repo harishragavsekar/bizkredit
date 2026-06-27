@@ -3,7 +3,7 @@ package com.bizkredit.module4.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.bizkredit.enums.DrawdownStatus;
+import com.bizkredit.common.enums.DrawdownStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

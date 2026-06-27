@@ -1,8 +1,9 @@
 package com.bizkredit.module4.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
-import com.bizkredit.dto.MakerCheckerDTOs.MakerCheckerActionRequest;
-import com.bizkredit.dto.MakerCheckerDTOs.MakerCheckerRequest;
+import com.bizkredit.common.dto.ApiResponse;
+import com.bizkredit.module4.dto.MakerCheckerDTOs.MakerCheckerRequest;
+import com.bizkredit.module4.dto.MakerCheckerDTOs.MakerCheckerActionRequest;
+
 import com.bizkredit.module4.entity.MakerCheckerRecord;
 import com.bizkredit.module4.service.MakerCheckerService;
 import io.swagger.v3.oas.annotations.tags.Tag;

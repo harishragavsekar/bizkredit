@@ -1,8 +1,8 @@
 package com.bizkredit.module5.repository;
 
 import com.bizkredit.module5.entity.EarlyWarningSignal;
-import com.bizkredit.enums.EWSSeverity;
-import com.bizkredit.enums.EWSStatus;
+import com.bizkredit.common.enums.EWSSeverity;
+import com.bizkredit.common.enums.EWSStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

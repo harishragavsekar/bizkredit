@@ -1,8 +1,9 @@
 package com.bizkredit.module5.entity;
 
-import com.bizkredit.enums.EWSSeverity;
-import com.bizkredit.enums.EWSSignalType;
-import com.bizkredit.enums.EWSStatus;
+import com.bizkredit.module4.entity.FacilityAccount;
+import com.bizkredit.common.enums.EWSSeverity;
+import com.bizkredit.common.enums.EWSSignalType;
+import com.bizkredit.common.enums.EWSStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;

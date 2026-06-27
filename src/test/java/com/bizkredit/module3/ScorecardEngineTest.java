@@ -6,10 +6,10 @@ import com.bizkredit.module3.entity.FinancialStatement;
 import com.bizkredit.module3.entity.ScorecardModel;
 import com.bizkredit.module3.service.ScorecardEngine;
 import com.bizkredit.module3.service.ScoringFieldResolver;
-import com.bizkredit.enums.EntityType;
-import com.bizkredit.enums.ProductType;
-import com.bizkredit.enums.RiskCategory;
-import com.bizkredit.enums.ScorecardStatus;
+import com.bizkredit.common.enums.EntityType;
+import com.bizkredit.common.enums.ProductType;
+import com.bizkredit.common.enums.RiskCategory;
+import com.bizkredit.common.enums.ScorecardStatus;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

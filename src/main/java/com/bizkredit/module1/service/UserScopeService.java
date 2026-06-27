@@ -1,7 +1,7 @@
 package com.bizkredit.module1.service;
 
 import com.bizkredit.module1.entity.User;
-import com.bizkredit.exception.ResourceNotFoundException;
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import com.bizkredit.module1.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

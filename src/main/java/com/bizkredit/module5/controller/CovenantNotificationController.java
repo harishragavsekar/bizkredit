@@ -1,11 +1,11 @@
 package com.bizkredit.module5.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module5.entity.Covenant;
 import com.bizkredit.module5.entity.EarlyWarningSignal;
 import com.bizkredit.module5.entity.Notification;
-import com.bizkredit.enums.NotificationCategory;
-import com.bizkredit.enums.NotificationStatus;
+import com.bizkredit.common.enums.NotificationCategory;
+import com.bizkredit.common.enums.NotificationStatus;
 import com.bizkredit.module5.service.CovenantNotificationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

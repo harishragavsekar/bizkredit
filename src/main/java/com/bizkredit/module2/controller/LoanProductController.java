@@ -1,8 +1,8 @@
 package com.bizkredit.module2.controller;
 
-import com.bizkredit.module1.dto.ApiResponse;
+import com.bizkredit.common.dto.ApiResponse;
 import com.bizkredit.module2.entity.LoanProduct;
-import com.bizkredit.enums.LoanProductStatus;
+import com.bizkredit.common.enums.LoanProductStatus;
 import com.bizkredit.module2.service.LoanProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

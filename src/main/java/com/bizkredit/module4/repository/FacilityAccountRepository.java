@@ -1,15 +1,14 @@
 package com.bizkredit.module4.repository;
 
 import com.bizkredit.module4.entity.FacilityAccount;
-import com.bizkredit.enums.FacilityStatus;
-import com.bizkredit.enums.ProductType;
+import com.bizkredit.common.enums.FacilityStatus;
+import com.bizkredit.common.enums.ProductType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

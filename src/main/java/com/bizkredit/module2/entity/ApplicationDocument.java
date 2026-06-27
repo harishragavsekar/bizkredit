@@ -1,7 +1,7 @@
 package com.bizkredit.module2.entity;
 
-import com.bizkredit.enums.DocumentType;
-import com.bizkredit.enums.VerificationStatus;
+import com.bizkredit.common.enums.DocumentType;
+import com.bizkredit.common.enums.VerificationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,5 +1,6 @@
 package com.bizkredit.module4.entity;
 
+import com.bizkredit.module4.entity.CollateralRecord;
 import jakarta.persistence.*;
 import lombok.*;
 

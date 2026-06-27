@@ -1,6 +1,6 @@
 package com.bizkredit.module1;
 
-import com.bizkredit.config.JwtUtil;
+import com.bizkredit.common.config.JwtUtil;
 import com.bizkredit.module1.dto.LoginRequest;
 import com.bizkredit.module1.dto.RegisterRequest;
 import com.bizkredit.module1.entity.User;
@@ -8,9 +8,9 @@ import com.bizkredit.module1.repository.AuditLogRepository;
 import com.bizkredit.module1.repository.UserRepository;
 import com.bizkredit.module1.service.AuthService;
 import com.bizkredit.module1.service.CustomUserDetailsService;
-import com.bizkredit.enums.Role;
-import com.bizkredit.exception.BadRequestException;
-import com.bizkredit.exception.ForbiddenException;
+import com.bizkredit.common.enums.Role;
+import com.bizkredit.common.exception.BadRequestException;
+import com.bizkredit.common.exception.ForbiddenException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -73,7 +73,7 @@ class AuthServiceTest {
         when(passwordEncoder.encode("password123")).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(sampleUser);
         when(customUserDetailsService.loadUserByUsername("harish@bizkredit.com")).thenReturn(userDetails);
-        when(jwtUtil.generateTokenWithClaims(any(UserDetails.class), anyMap())).thenReturn("jwt-token-123");
+        when(jwtUtil.generateToken(any(UserDetails.class), anyMap())).thenReturn("jwt-token-123");
 
         var response = authService.register(request);
 
@@ -108,7 +108,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("harish@bizkredit.com")).thenReturn(Optional.of(sampleUser));
         when(userRepository.save(any(User.class))).thenReturn(sampleUser);
         when(customUserDetailsService.loadUserByUsername("harish@bizkredit.com")).thenReturn(userDetails);
-        when(jwtUtil.generateTokenWithClaims(any(UserDetails.class), anyMap())).thenReturn("jwt-token-123");
+        when(jwtUtil.generateToken(any(UserDetails.class), anyMap())).thenReturn("jwt-token-123");
 
         var response = authService.login(request);
 
@@ -130,6 +130,6 @@ class AuthServiceTest {
                 .isInstanceOf(ForbiddenException.class)
                 .hasMessageContaining("Locked");
 
-        verify(jwtUtil, never()).generateTokenWithClaims(any(UserDetails.class), anyMap());
+        verify(jwtUtil, never()).generateToken(any(UserDetails.class), anyMap());
     }
 }

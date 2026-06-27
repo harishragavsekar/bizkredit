@@ -1,7 +1,7 @@
 package com.bizkredit.module4.repository;
 
 import com.bizkredit.module4.entity.Drawdown;
-import com.bizkredit.enums.DrawdownStatus;
+import com.bizkredit.common.enums.DrawdownStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

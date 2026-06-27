@@ -1,5 +1,6 @@
 package com.bizkredit.module1.service;
 
+import com.bizkredit.common.exception.ResourceNotFoundException;
 import com.bizkredit.module1.entity.AuditLog;
 import com.bizkredit.module1.repository.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class AuditLogService {
     @Transactional(readOnly = true)
     public AuditLog getById(Long auditId) {
         return auditLogRepository.findById(auditId)
-                .orElseThrow(() -> new com.bizkredit.exception.ResourceNotFoundException(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Audit log not found: " + auditId));
     }
 }

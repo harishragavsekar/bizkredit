@@ -1,8 +1,8 @@
 package com.bizkredit.module2.repository;
 
 import com.bizkredit.module2.entity.LoanApplication;
-import com.bizkredit.enums.ApplicationStatus;
-import com.bizkredit.enums.ProductType;
+import com.bizkredit.common.enums.ApplicationStatus;
+import com.bizkredit.common.enums.ProductType;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

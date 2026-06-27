@@ -1,7 +1,7 @@
 package com.bizkredit.module3.repository;
 
 import com.bizkredit.module3.entity.CreditProposal;
-import com.bizkredit.enums.ProposalStatus;
+import com.bizkredit.common.enums.ProposalStatus;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
