@@ -21,14 +21,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    // Utility for JWT parsing and validation
     private final JwtUtil jwtUtil;
-
-    // Service to load user details from DB
     private final CustomUserDetailsService userDetailsService;
-
-
-     // This filter runs once per request and performs JWT authentication.
 
     @Override
     protected void doFilterInternal(
@@ -40,55 +34,49 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Read Authorization header
         String authHeader = request.getHeader("Authorization");
 
-        // If header is missing or not Bearer type, skip authentication
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
+        // Proceed only if Authorization header is present and starts with Bearer
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+            // Extract JWT token by removing "Bearer " prefix
+            String jwt = authHeader.substring(7);
+
+            try {
+                // Extract username from token
+                String username = jwtUtil.extractUsername(jwt);
+
+                // Authenticate only if username exists and no user is already authenticated
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                    // Load user details from database
+                    var userDetails = userDetailsService.loadUserByUsername(username);
+
+                    // Validate token username and expiration
+                    if (jwtUtil.isTokenValid(jwt, userDetails)) {
+
+                        // Create authentication token
+                        var authToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+
+                        // Add request details like IP address and session
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
+                        );
+
+                        // Store authentication in SecurityContext
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                        log.debug("JWT authenticated user: {}", username);
+                    }
+                }
+
+            } catch (Exception e) {
+                // If token is invalid or expired, continue without authentication
+                log.error("JWT authentication failed", e);
+            }
         }
-
-        // Extract JWT token (remove "Bearer " prefix)
-        String jwt = authHeader.substring(7);
-
-        String username;
-
-        try {
-            // Extract username from token
-            username = jwtUtil.extractUsername(jwt);
-        } catch (Exception e) {
-            log.error("Invalid JWT token", e);
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Proceed only if user is not already authenticated
-        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Load user from database
-        var userDetails = userDetailsService.loadUserByUsername(username);
-
-        // Validate token (username + expiration)
-        if (!jwtUtil.isTokenValid(jwt, userDetails)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // Create authentication token
-        var authToken = new UsernamePasswordAuthenticationToken(
-                userDetails,
-                null,
-                userDetails.getAuthorities()
-        );
-
-        // Add request details (IP, session, etc.)
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        // Store authentication in SecurityContext
-        SecurityContextHolder.getContext().setAuthentication(authToken);
-
-        log.debug("JWT authenticated user: {}", username);
 
         // Continue request processing
         filterChain.doFilter(request, response);

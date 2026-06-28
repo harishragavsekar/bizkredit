@@ -10,8 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,7 +17,6 @@ public class AuditLogService {
 
     private final AuditLogRepository auditLogRepository;
 
-    // Helper method used by all services to log actions
     @Transactional
     public void log(Long userId, String action, String entityType, String recordId) {
         try {
@@ -35,11 +32,9 @@ public class AuditLogService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AuditLog> getAuditLogs(Long userId, String entityType, String action,
-                                        LocalDateTime from, LocalDateTime to,
-                                        int page, int size) {
-        return auditLogRepository.findWithFilters(
-                userId, entityType, action, from, to,
+    public Page<AuditLog> getLogsByUserId(Long userId, int page, int size) {
+        return auditLogRepository.findByUserIdOrderByTimestampDesc(
+                userId,
                 PageRequest.of(page, size)
         );
     }
@@ -47,7 +42,7 @@ public class AuditLogService {
     @Transactional(readOnly = true)
     public AuditLog getById(Long auditId) {
         return auditLogRepository.findById(auditId)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Audit log not found: " + auditId));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Audit log not found: " + auditId));
     }
 }

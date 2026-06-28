@@ -43,12 +43,10 @@ public class AuthService {
     @Transactional
     public AuthResponse register(RegisterRequest request) {
 
-        // Check duplicate email
         if (userRepository.existsByEmail(request.email())) {
             throw new BadRequestException("Email already registered: " + request.email());
         }
 
-        // Create user
         User user = User.builder()
                 .name(request.name())
                 .email(request.email())

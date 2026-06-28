@@ -3,7 +3,6 @@ package com.bizkredit.common.config;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -14,7 +13,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
-@Slf4j
 @Component
 public class JwtUtil {
 
@@ -24,53 +22,53 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    // Public token creation
     public String generateToken(UserDetails userDetails) {
         return generateToken(userDetails, Map.of());
     }
 
     public String generateToken(UserDetails userDetails, Map<String, Object> claims) {
-        long now = System.currentTimeMillis();
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
                 .claims(claims)
                 .subject(userDetails.getUsername())
-                .issuedAt(new Date(now))
-                .expiration(new Date(now + jwtExpiration))
-                .signWith(getSigningKey())
+                .issuedAt(now)
+                .expiration(expiryDate)
+                .signWith(signingKey())
                 .compact();
     }
 
-    // Extract username (subject)
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        return userDetails.getUsername().equals(extractUsername(token))
+                && !isTokenExpired(token);
+    }
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // Validate token
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        return extractUsername(token).equals(userDetails.getUsername())
-                && !isTokenExpired(token);
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
-    // Generic claim extractor
-    public <T> T extractClaim(String token, Function<Claims, T> resolver) {
-        return resolver.apply(parseClaims(token));
+    public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
+        return claimResolver.apply(extractAllClaims(token));
     }
 
     private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration)
-                .before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
-    private Claims parseClaims(String token) {
+    private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(signingKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
-    private SecretKey getSigningKey() {
+    private SecretKey signingKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 }

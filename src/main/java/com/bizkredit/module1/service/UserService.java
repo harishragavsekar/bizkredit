@@ -71,6 +71,7 @@ public class UserService {
         return updated;
     }
 
+
     @Transactional(readOnly = true)
     public List<AuditLog> getAuditLogs(Long userId) {
         return auditLogRepository.findByUserId(userId);
