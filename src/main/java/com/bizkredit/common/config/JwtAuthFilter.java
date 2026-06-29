@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
+// further requests , token based validation
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -31,29 +31,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Read Authorization header
-        String authHeader = request.getHeader("Authorization");
+         String authHeader = request.getHeader("Authorization");
 
-        // Proceed only if Authorization header is present and starts with Bearer
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
 
             // Extract JWT token by removing "Bearer " prefix
             String jwt = authHeader.substring(7);
 
             try {
-                // Extract username from token
                 String username = jwtUtil.extractUsername(jwt);
-
-                // Authenticate only if username exists and no user is already authenticated
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                    // Load user details from database
                     var userDetails = userDetailsService.loadUserByUsername(username);
-
-                    // Validate token username and expiration
                     if (jwtUtil.isTokenValid(jwt, userDetails)) {
-
-                        // Create authentication token
                         var authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
@@ -73,7 +63,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
 
             } catch (Exception e) {
-                // If token is invalid or expired, continue without authentication
+
                 log.error("JWT authentication failed", e);
             }
         }

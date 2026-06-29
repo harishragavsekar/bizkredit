@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-// Configures Spring Security, JWT filter, authentication provider, CORS, and API access rules
+// Configures Spring Security, JWT filter, authentication provider,  API access rules
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -56,7 +56,7 @@ public class SecurityConfig {
                 // Register custom database-based authentication provider
                 .authenticationProvider(authenticationProvider())
 
-                // Run JWT filter before Spring's username/password authentication filter
+                // Run custom JWT filter before Spring's username/password authentication filter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         // Build and return security filter chain
@@ -76,6 +76,7 @@ public class SecurityConfig {
     // Provides BCrypt encoder for password hashing and password verification
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 

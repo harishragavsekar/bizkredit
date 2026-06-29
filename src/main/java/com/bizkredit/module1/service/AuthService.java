@@ -23,9 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.Map;
 
-// Handles authentication, registration, logout, and password reset operations
-
-
+// Handles authentication, registration, logout.
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -70,7 +68,6 @@ public class AuthService {
     public AuthResponse login(LoginRequest request) {
 
         try {
-            // Authenticate
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             request.email(),
@@ -86,7 +83,6 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new BadRequestException("Invalid credentials"));
 
-        // Check status
         if (!"Active".equals(user.getStatus())) {
             throw new ForbiddenException("Account is " + user.getStatus() + ". Contact admin.");
         }
@@ -106,6 +102,8 @@ public class AuthService {
         saveAuditLog(userId, "LOGOUT");
         log.info("User logged out: {}", userId);
     }
+
+
 
     private void handleFailedLogin(String email) {
 

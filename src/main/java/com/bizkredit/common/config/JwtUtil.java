@@ -12,7 +12,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
-
 @Component
 public class JwtUtil {
 
@@ -22,20 +21,22 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
+    // Generate token without extra claims
     public String generateToken(UserDetails userDetails) {
-        return generateToken(userDetails, Map.of());
+        return generateToken(userDetails, Map.of()); // empty claims
     }
 
+    // Generate JWT token
     public String generateToken(UserDetails userDetails, Map<String, Object> claims) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .claims(claims)
+                .claims(claims)               // custom data
                 .subject(userDetails.getUsername())
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(signingKey())
+                .signWith(signingKey())       // sign token
                 .compact();
     }
 
@@ -52,6 +53,7 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    // Generic method to extract any claim
     public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
         return claimResolver.apply(extractAllClaims(token));
     }
@@ -60,14 +62,16 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
+    // Parse token and get all claims
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(signingKey())
+                .verifyWith(signingKey())  // verify signature
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
     }
 
+    // Create signing key from secret
     private SecretKey signingKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }

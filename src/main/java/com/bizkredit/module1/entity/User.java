@@ -14,6 +14,8 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+
+// Prevent serialization of Hibernate proxy fields created due to lazy loading
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
